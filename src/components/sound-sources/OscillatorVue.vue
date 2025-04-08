@@ -53,6 +53,12 @@
       @input="handleFreqChange"
     />
   </div>
+  <label for="add-effect">Add effect</label>
+  <select name="add-effect">
+    <option v-for="(effect, i) in effectTypes" :key="i" :value="effect">
+      {{ effect }}
+    </option>
+  </select>
 </template>
 
 <script>
@@ -80,6 +86,7 @@ export default {
       muted: true,
       oscillatorNode: this.activeOsc.osc,
       gainNode: this.activeOsc.gainNode,
+      effectTypes: ["pan", "q", "delay"],
     };
   },
   mounted() {

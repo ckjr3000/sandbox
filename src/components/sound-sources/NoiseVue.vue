@@ -15,6 +15,12 @@
       @input="handleGainChange"
     />
   </div>
+  <label for="add-effect">Add effect</label>
+  <select name="add-effect">
+    <option v-for="(effect, i) in effectTypes" :key="i" :value="effect">
+      {{ effect }}
+    </option>
+  </select>
 </template>
 
 <script>
@@ -37,9 +43,7 @@ export default {
       muted: true,
       noiseSource: this.activeNoiseSource.noiseSource,
       gainNode: this.activeNoiseSource.gainNode,
-      bandPassFilter: null,
-      colors: ["White", "Pink"],
-      filterConnected: false,
+      effectTypes: ["pan", "q", "delay", "lowpass", "highpass", "bandpass"],
     };
   },
   mounted() {

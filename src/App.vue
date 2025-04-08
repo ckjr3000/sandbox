@@ -43,18 +43,20 @@
       </div>
     </div>
   </section>
+  <ValueRangeEffectVue effect="pan" />
 </template>
 
 <script>
 import Noise from "./components/sound-sources/NoiseVue.vue";
 import Oscillator from "./components/sound-sources/OscillatorVue.vue";
+import ValueRangeEffectVue from "./components/effects/ValueRangeEffectVue.vue";
 import { createGainNode } from "@/utils/gainUtils";
 import { createOscillator } from "@/utils/oscillatorUtils";
 import { createWhiteNoiseSource } from "@/utils/noiseUtils";
 import { createPanner } from "@/utils/panUtils";
 
 export default {
-  components: { Oscillator, Noise },
+  components: { Oscillator, Noise, ValueRangeEffectVue },
   data() {
     return {
       audioContext: new AudioContext(),
