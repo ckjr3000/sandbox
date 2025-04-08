@@ -1,3 +1,7 @@
+<!-- 
+Component for a white noise sound source.
+-->
+
 <template>
   <h2>Noise</h2>
   <button v-show="!muted" ref="muteBtn" @click="handleMute">Mute</button>

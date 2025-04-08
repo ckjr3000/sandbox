@@ -1,3 +1,8 @@
+<!-- 
+Top level component with menu to add sound sources.
+The audio context is initialised here and passed to child components.
+-->
+
 <template>
   <section id="add-source-buttons">
     <label for="add-sound-source">Add sound source:</label>
@@ -43,20 +48,18 @@
       </div>
     </div>
   </section>
-  <ValueRangeEffectVue effect="pan" />
 </template>
 
 <script>
 import Noise from "./components/sound-sources/NoiseVue.vue";
 import Oscillator from "./components/sound-sources/OscillatorVue.vue";
-import ValueRangeEffectVue from "./components/effects/ValueRangeEffectVue.vue";
 import { createGainNode } from "@/utils/gainUtils";
 import { createOscillator } from "@/utils/oscillatorUtils";
 import { createWhiteNoiseSource } from "@/utils/noiseUtils";
 import { createPanner } from "@/utils/panUtils";
 
 export default {
-  components: { Oscillator, Noise, ValueRangeEffectVue },
+  components: { Oscillator, Noise },
   data() {
     return {
       audioContext: new AudioContext(),

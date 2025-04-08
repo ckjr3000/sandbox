@@ -1,3 +1,12 @@
+<!-- 
+Component for an oscillator sound source.
+
+Takes 'oscType' prop to determine the available frequency range.
+
+By default has mute/unmute, gain control, and frquency control.
+Has a selector to add further audio effects.
+-->
+
 <template>
   <h2>{{ oscType }}</h2>
 
