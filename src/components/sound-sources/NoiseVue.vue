@@ -19,19 +19,20 @@ Component for a white noise sound source.
       @input="handleGainChange"
     />
   </div>
-  <label for="add-effect">Add effect</label>
-  <select name="add-effect">
-    <option v-for="(effect, i) in effectTypes" :key="i" :value="effect">
-      {{ effect }}
-    </option>
-  </select>
+  <EffectSelect
+    :availableEffects="['pan', 'q', 'delay', 'lowpass', 'highpass', 'bandpass']"
+  />
 </template>
 
 <script>
 import { mute, changeGain } from "@/utils/gainUtils.js";
+import EffectSelect from "../effects/EffectSelectVue.vue";
 
 export default {
   name: "NoiseVue",
+  components: {
+    EffectSelect,
+  },
   props: {
     audioContext: {
       type: Object,
@@ -47,7 +48,6 @@ export default {
       muted: true,
       noiseSource: this.activeNoiseSource.noiseSource,
       gainNode: this.activeNoiseSource.gainNode,
-      effectTypes: ["pan", "q", "delay", "lowpass", "highpass", "bandpass"],
     };
   },
   mounted() {

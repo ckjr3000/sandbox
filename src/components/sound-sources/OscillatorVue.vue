@@ -62,20 +62,17 @@ Has a selector to add further audio effects.
       @input="handleFreqChange"
     />
   </div>
-  <label for="add-effect">Add effect</label>
-  <select name="add-effect">
-    <option v-for="(effect, i) in effectTypes" :key="i" :value="effect">
-      {{ effect }}
-    </option>
-  </select>
+  <EffectSelect :availableEffects="['pan', 'q', 'delay']" />
 </template>
 
 <script>
 import { mute, changeGain } from "@/utils/gainUtils.js";
 import { changeFreq } from "@/utils/oscillatorUtils.js";
+import EffectSelect from "../effects/EffectSelectVue.vue";
 
 export default {
   name: "OscillatorVue",
+  components: { EffectSelect },
   props: {
     audioContext: {
       type: Object,
@@ -95,7 +92,6 @@ export default {
       muted: true,
       oscillatorNode: this.activeOsc.osc,
       gainNode: this.activeOsc.gainNode,
-      effectTypes: ["pan", "q", "delay"],
     };
   },
   mounted() {

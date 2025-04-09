@@ -82,6 +82,7 @@ export default {
           gainNode,
           stereoPanner,
         };
+
         this.oscillators.push(oscInstance);
       } else if (src === "Noise") {
         const ctx = this.audioContext;

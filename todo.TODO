@@ -1,0 +1,21 @@
+- Build 'add sound source' menu @done
+Sound Sources
+- Build oscillator component (takes 'type' prop for different frequency ranges) @done
+- Build white noise component @done
+- Add 'add effect' menu to source components  
+- Add button to duplicate source in its exact state
+Effects
+- Build pan
+- Build q factor
+- Build delay
+- Build timestretch
+- Build bitcrush
+- Build wave shape selection
+- Build waveshaper
+- Build filter component (takes type prop)
+Controls
+- Build value automation component
+Bundles
+- Build button grid component
+
+- Write README
