@@ -1,4 +1,6 @@
-export function createWhiteNoiseSource(ctx) {
+export function createWhiteNoiseSource(
+  ctx: AudioContext
+): AudioBufferSourceNode {
   const buffer = ctx.createBuffer(2, ctx.sampleRate * 3, ctx.sampleRate);
   const channelDataLeft = buffer.getChannelData(0);
   const channelDataRight = buffer.getChannelData(1);

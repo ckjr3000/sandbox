@@ -23,7 +23,6 @@ The audio context is initialised here and passed to child components.
         :key="i"
         v-show="!oscillator.hidden"
       >
-        <button @click="handleHideOscillator(i)">Remove</button>
         <Oscillator
           ref="oscillatorRefs"
           :audioContext="audioContext"
@@ -39,7 +38,6 @@ The audio context is initialised here and passed to child components.
         :key="i"
         v-show="!noiseSource.hidden"
       >
-        <button @click="handleHideNoiseSource(i)">Remove</button>
         <Noise
           ref="noiseSourceRefs"
           :audioContext="audioContext"
@@ -50,13 +48,14 @@ The audio context is initialised here and passed to child components.
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import Noise from "./components/sound-sources/NoiseVue.vue";
 import Oscillator from "./components/sound-sources/OscillatorVue.vue";
-import { createGainNode } from "@/utils/gainUtils";
-import { createOscillator } from "@/utils/oscillatorUtils";
-import { createWhiteNoiseSource } from "@/utils/noiseUtils";
-import { createPanner } from "@/utils/panUtils";
+import { createGainNode } from "./utils/gainUtils";
+import { createOscillator } from "./utils/oscillatorUtils";
+import { createWhiteNoiseSource } from "./utils/noiseUtils";
+import { createPanner } from "./utils/panUtils";
+import { OscInstance, NoiseInstance } from "./types";
 
 export default {
   components: { Oscillator, Noise },
@@ -64,19 +63,19 @@ export default {
     return {
       audioContext: new AudioContext(),
       soundSrcTypes: ["Osc - low", "Osc - mid", "Osc - high", "Noise"],
-      oscillators: [],
-      noiseSources: [],
+      oscillators: [] as OscInstance[],
+      noiseSources: [] as NoiseInstance[],
     };
   },
   methods: {
-    handleAddSoundSrc(src) {
+    handleAddSoundSrc(src: string) {
       if (["Osc - low", "Osc - mid", "Osc - high"].includes(src)) {
         const ctx = this.audioContext;
         const osc = createOscillator(ctx);
         const gainNode = createGainNode(ctx);
         const stereoPanner = createPanner(ctx);
 
-        const oscInstance = {
+        const oscInstance: OscInstance = {
           type: src,
           osc,
           gainNode,
@@ -89,27 +88,12 @@ export default {
         const noiseSource = createWhiteNoiseSource(ctx);
         const gainNode = createGainNode(ctx);
 
-        const noiseInstance = {
+        const noiseInstance: NoiseInstance = {
           noiseSource,
           gainNode,
         };
         this.noiseSources.push(noiseInstance);
       }
-    },
-    handleHideOscillator(i) {
-      const oscComponent = this.$refs.oscillatorRefs[i];
-      if (oscComponent) {
-        oscComponent.handleMute();
-      }
-      this.oscillators[i].hidden = true;
-    },
-    handleHideNoiseSource(i) {
-      const noiseComponent = this.$refs.noiseSourceRefs[i];
-      console.log(noiseComponent);
-      if (noiseComponent) {
-        noiseComponent.handleMute();
-      }
-      this.noiseSources[i].hidden = true;
     },
   },
 };

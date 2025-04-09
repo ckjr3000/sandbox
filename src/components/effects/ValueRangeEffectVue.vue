@@ -15,7 +15,7 @@ Component for any audio effect that uses a range input to set value.
   />
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
     effect: {
@@ -25,10 +25,10 @@ export default {
   },
   data() {
     return {
-      minValue: null,
-      maxValue: null,
-      stepValue: null,
-      value: null,
+      minValue: 0 as number,
+      maxValue: 0 as number,
+      stepValue: 0 as number,
+      value: 0 as number,
     };
   },
   mounted() {

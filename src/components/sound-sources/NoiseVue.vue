@@ -24,9 +24,10 @@ Component for a white noise sound source.
   />
 </template>
 
-<script>
-import { mute, changeGain } from "@/utils/gainUtils.js";
+<script lang="ts">
+import { mute, changeGain } from "@/utils/gainUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
+import { NoiseInstance } from "@/types";
 
 export default {
   name: "NoiseVue",
@@ -35,11 +36,11 @@ export default {
   },
   props: {
     audioContext: {
-      type: Object,
+      type: AudioContext,
       required: true,
     },
     activeNoiseSource: {
-      type: Object,
+      type: Object as () => NoiseInstance,
       required: true,
     },
   },
@@ -67,7 +68,7 @@ export default {
       this.muted = false;
       changeGain(
         this.audioContext,
-        parseFloat(this.$refs.gainCtrl.value),
+        parseFloat((this.$refs.gainCtrl as HTMLInputElement).value),
         this.muted,
         this.gainNode
       );
@@ -76,8 +77,16 @@ export default {
       this.muted = true;
       mute(this.audioContext, this.gainNode);
     },
-    handleGainChange(e) {
-      changeGain(this.audioContext, e.target.value, this.muted, this.gainNode);
+    handleGainChange(e: Event) {
+      const target = e.target as HTMLInputElement;
+      if (target.value) {
+        changeGain(
+          this.audioContext,
+          parseFloat(target.value),
+          this.muted,
+          this.gainNode
+        );
+      }
     },
   },
 };

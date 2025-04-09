@@ -1,6 +1,6 @@
 <!-- 
  Select component for choosing an effect to add to a sound source. 
- 
+
  Each effect can only be added once to it is removed from the options on select and the
  sub component for that effect is mounted.
 -->
@@ -16,7 +16,7 @@
   <p>{{ activeEffects }}</p>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
     availableEffects: {
@@ -27,12 +27,12 @@ export default {
   data() {
     return {
       effectTypes: this.availableEffects,
-      activeEffects: [],
+      activeEffects: [] as string[],
     };
   },
   methods: {
-    handleAddEffect(event) {
-      const selectedEffect = event.target.value;
+    handleAddEffect(e: Event) {
+      const selectedEffect = (e.target as HTMLSelectElement).value;
       // remove the selected effect from the list of available effects
       this.effectTypes = this.effectTypes.filter(
         (effect) => effect !== selectedEffect
@@ -40,7 +40,7 @@ export default {
       // add the selected effect to the list of active effects
       this.activeEffects.push(selectedEffect);
       // set the selected effect to default
-      event.target.value = "default";
+      (e.target as HTMLSelectElement).value = "default";
     },
   },
 };

@@ -65,17 +65,18 @@ Has a selector to add further audio effects.
   <EffectSelect :availableEffects="['pan', 'q', 'delay']" />
 </template>
 
-<script>
-import { mute, changeGain } from "@/utils/gainUtils.js";
-import { changeFreq } from "@/utils/oscillatorUtils.js";
+<script lang="ts">
+import { mute, changeGain } from "@/utils/gainUtils";
+import { changeFreq } from "@/utils/oscillatorUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
+import { OscInstance } from "@/types";
 
 export default {
   name: "OscillatorVue",
   components: { EffectSelect },
   props: {
     audioContext: {
-      type: Object,
+      type: AudioContext,
       required: true,
     },
     oscType: {
@@ -83,7 +84,7 @@ export default {
       required: true,
     },
     activeOsc: {
-      type: Object,
+      type: Object as () => OscInstance,
       required: true,
     },
   },
@@ -100,7 +101,7 @@ export default {
     const gainNode = this.gainNode;
 
     osc.frequency.setValueAtTime(
-      parseFloat(this.$refs.freqCtrl.value),
+      parseFloat((this.$refs.freqCtrl as HTMLInputElement).value),
       ctx.currentTime
     );
     gainNode.gain.setValueAtTime(0, ctx.currentTime);
@@ -113,7 +114,7 @@ export default {
       this.muted = false;
       changeGain(
         this.audioContext,
-        parseFloat(this.$refs.gainCtrl.value),
+        parseFloat((this.$refs.gainCtrl as HTMLInputElement).value),
         this.muted,
         this.gainNode
       );
@@ -122,11 +123,26 @@ export default {
       this.muted = true;
       mute(this.audioContext, this.gainNode);
     },
-    handleGainChange(e) {
-      changeGain(this.audioContext, e.target.value, this.muted, this.gainNode);
+    handleGainChange(e: Event) {
+      const target = e.target as HTMLInputElement;
+      if (target.value) {
+        changeGain(
+          this.audioContext,
+          parseFloat(target.value),
+          this.muted,
+          this.gainNode
+        );
+      }
     },
-    handleFreqChange(e) {
-      changeFreq(this.audioContext, e.target.value, this.oscillatorNode);
+    handleFreqChange(e: Event) {
+      const target = e.target as HTMLInputElement;
+      if (target.value) {
+        changeFreq(
+          this.audioContext,
+          parseFloat(target.value),
+          this.oscillatorNode
+        );
+      }
     },
   },
 };
