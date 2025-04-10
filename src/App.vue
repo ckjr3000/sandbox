@@ -53,8 +53,9 @@ import { createGainNode } from "./utils/gainUtils";
 import { createOscillator } from "./utils/oscillatorUtils";
 import { createWhiteNoiseSource } from "./utils/noiseUtils";
 import { OscInstance, NoiseInstance } from "./types";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   components: { Oscillator, Noise },
   data() {
     return {
@@ -65,14 +66,7 @@ export default {
     };
   },
   methods: {
-    handleAddSoundSrc(
-      this: {
-        audioContext: AudioContext;
-        oscillators: OscInstance[];
-        noiseSources: NoiseInstance[];
-      },
-      src: string
-    ) {
+    handleAddSoundSrc(src: string) {
       if (["Osc - low", "Osc - mid", "Osc - high"].includes(src)) {
         const ctx = this.audioContext;
         const osc = createOscillator(ctx);
@@ -98,7 +92,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style>
