@@ -29,6 +29,7 @@ import { mute, changeGain } from "@/utils/gainUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
 import { NoiseInstance } from "@/types";
 import { defineComponent } from "vue";
+import { getCentreFrequency } from "@/utils/audioUtils";
 
 export default defineComponent({
   name: "NoiseVue",
@@ -88,10 +89,10 @@ export default defineComponent({
     so is initialised to the middle of the available range. The Q is initalised 
     to 0 to give the widest possible bandwidth */
     this.bandPassNode.frequency.setValueAtTime(
-      1000, // @TODO - write a method to calculate the middle of the available range
+      getCentreFrequency(10, 15000),
       ctx.currentTime
     );
-    this.bandPassNode.Q.setValueAtTime(0, ctx.currentTime);
+    this.bandPassNode.Q.setValueAtTime(1, ctx.currentTime);
 
     //@TODO: explore other filters available on BiquadFilterNode
 

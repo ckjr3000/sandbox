@@ -51,7 +51,7 @@ import Noise from "./components/sound-sources/NoiseVue.vue";
 import Oscillator from "./components/sound-sources/OscillatorVue.vue";
 import { createGainNode } from "./utils/gainUtils";
 import { createOscillator } from "./utils/oscillatorUtils";
-import { createWhiteNoiseSource } from "./utils/noiseUtils";
+import { createWhiteNoiseSource } from "./utils/audioUtils";
 import { OscInstance, NoiseInstance } from "./types";
 import { defineComponent } from "vue";
 
