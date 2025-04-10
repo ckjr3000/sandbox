@@ -9,26 +9,48 @@
   <label for="add-effect">Add effect</label>
   <select name="add-effect" @change="handleAddEffect">
     <option value="default" selected>-</option>
-    <option v-for="(effect, i) in effectTypes" :key="i" :value="effect">
+    <option
+      v-for="(effect, i) in effectTypes"
+      :key="i"
+      :value="effect"
+      @click="$emit('effect-selected', effect)"
+    >
       {{ effect }}
     </option>
   </select>
-  <p>{{ activeEffects }}</p>
+  <div v-for="(effect, i) in activeEffects" :key="i">
+    <ValueRangeEffect
+      v-if="valueRangeEffects.includes(effect)"
+      :effect="effect"
+    />
+  </div>
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+import ValueRangeEffect from "./ValueRangeEffectVue.vue";
+
+export default defineComponent({
+  name: "EffectSelectVue",
+  components: {
+    ValueRangeEffect,
+  },
   props: {
     availableEffects: {
-      type: Array,
+      type: Array as () => string[],
       required: true,
     },
   },
   data() {
     return {
-      effectTypes: this.availableEffects,
+      effectTypes: [] as string[],
       activeEffects: [] as string[],
+      valueRangeEffects: ["pan", "q", "delay", "filter"],
+      valueSelectEffects: ["waveshape"],
     };
+  },
+  created() {
+    this.effectTypes = [...this.availableEffects];
   },
   methods: {
     handleAddEffect(e: Event) {
@@ -43,7 +65,7 @@ export default {
       (e.target as HTMLSelectElement).value = "default";
     },
   },
-};
+});
 </script>
 
 <style></style>

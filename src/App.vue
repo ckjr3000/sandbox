@@ -21,7 +21,6 @@ The audio context is initialised here and passed to child components.
         class="sound-source-component"
         v-for="(oscillator, i) in oscillators"
         :key="i"
-        v-show="!oscillator.hidden"
       >
         <Oscillator
           ref="oscillatorRefs"
@@ -36,7 +35,6 @@ The audio context is initialised here and passed to child components.
         class="sound-source-component"
         v-for="(noiseSource, i) in noiseSources"
         :key="i"
-        v-show="!noiseSource.hidden"
       >
         <Noise
           ref="noiseSourceRefs"
@@ -54,32 +52,36 @@ import Oscillator from "./components/sound-sources/OscillatorVue.vue";
 import { createGainNode } from "./utils/gainUtils";
 import { createOscillator } from "./utils/oscillatorUtils";
 import { createWhiteNoiseSource } from "./utils/noiseUtils";
-import { createPanner } from "./utils/panUtils";
 import { OscInstance, NoiseInstance } from "./types";
 
 export default {
   components: { Oscillator, Noise },
   data() {
     return {
-      audioContext: new AudioContext(),
+      audioContext: new AudioContext() as AudioContext,
       soundSrcTypes: ["Osc - low", "Osc - mid", "Osc - high", "Noise"],
       oscillators: [] as OscInstance[],
       noiseSources: [] as NoiseInstance[],
     };
   },
   methods: {
-    handleAddSoundSrc(src: string) {
+    handleAddSoundSrc(
+      this: {
+        audioContext: AudioContext;
+        oscillators: OscInstance[];
+        noiseSources: NoiseInstance[];
+      },
+      src: string
+    ) {
       if (["Osc - low", "Osc - mid", "Osc - high"].includes(src)) {
         const ctx = this.audioContext;
         const osc = createOscillator(ctx);
         const gainNode = createGainNode(ctx);
-        const stereoPanner = createPanner(ctx);
 
-        const oscInstance: OscInstance = {
+        const oscInstance = {
           type: src,
-          osc,
-          gainNode,
-          stereoPanner,
+          osc: osc,
+          gainNode: gainNode,
         };
 
         this.oscillators.push(oscInstance);

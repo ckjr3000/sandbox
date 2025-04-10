@@ -28,8 +28,9 @@ Component for a white noise sound source.
 import { mute, changeGain } from "@/utils/gainUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
 import { NoiseInstance } from "@/types";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "NoiseVue",
   components: {
     EffectSelect,
@@ -89,7 +90,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style></style>

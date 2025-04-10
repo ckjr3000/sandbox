@@ -16,7 +16,9 @@ Component for any audio effect that uses a range input to set value.
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   props: {
     effect: {
       type: String,
@@ -61,7 +63,7 @@ export default {
         break;
     }
   },
-};
+});
 </script>
 
 <style></style>

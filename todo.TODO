@@ -2,7 +2,7 @@
 Sound Sources
 - Build oscillator component (takes 'type' prop for different frequency ranges) @done
 - Build white noise component @done
-- Add 'add effect' menu to source components  
+- Add 'add effect' menu to source components @done
 - Add button to duplicate source in its exact state
 Effects
 - Build pan

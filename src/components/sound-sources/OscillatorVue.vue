@@ -3,8 +3,7 @@ Component for an oscillator sound source.
 
 Takes 'oscType' prop to determine the available frequency range.
 
-By default has mute/unmute, gain control, and frquency control.
-Has a selector to add further audio effects.
+By default has mute/unmute, gain control, and frequency control.
 -->
 
 <template>
@@ -62,7 +61,7 @@ Has a selector to add further audio effects.
       @input="handleFreqChange"
     />
   </div>
-  <EffectSelect :availableEffects="['pan', 'q', 'delay']" />
+  <EffectSelect :availableEffects="['pan', 'delay']" />
 </template>
 
 <script lang="ts">
@@ -70,8 +69,9 @@ import { mute, changeGain } from "@/utils/gainUtils";
 import { changeFreq } from "@/utils/oscillatorUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
 import { OscInstance } from "@/types";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "OscillatorVue",
   components: { EffectSelect },
   props: {
@@ -93,6 +93,8 @@ export default {
       muted: true,
       oscillatorNode: this.activeOsc.osc,
       gainNode: this.activeOsc.gainNode,
+      panNode: null as StereoPannerNode | null,
+      delayNode: null as DelayNode | null,
     };
   },
   mounted() {
@@ -106,7 +108,20 @@ export default {
     );
     gainNode.gain.setValueAtTime(0, ctx.currentTime);
 
-    osc.connect(gainNode).connect(ctx.destination);
+    // Initialise and connect all available effects
+    this.panNode = ctx.createStereoPanner();
+    this.panNode.pan.setValueAtTime(0, ctx.currentTime);
+
+    this.delayNode = ctx.createDelay();
+    this.delayNode.delayTime.setValueAtTime(0, ctx.currentTime);
+
+    osc
+      .connect(this.panNode)
+      .connect(this.delayNode)
+      .connect(gainNode)
+      .connect(ctx.destination);
+
+    // Start the oscillator
     osc.start();
   },
   methods: {
@@ -145,5 +160,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
