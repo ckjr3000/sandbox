@@ -65,18 +65,26 @@ By default has mute/unmute, gain control, and frequency control.
     :availableEffects="['pan', 'delay']"
     @select-effect="handleEffectSelected"
   />
+  <ValueRangeEffect
+    v-for="(effect, i) in activeEffects"
+    :key="i"
+    :effect="effect"
+    :AudioContext="audioContext"
+    :effectNode="getEffectNode(effect)"
+  />
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
+import { OscInstance } from "@/types";
 import { mute, changeGain } from "@/utils/gainUtils";
 import { changeFreq } from "@/utils/oscillatorUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
-import { OscInstance } from "@/types";
-import { defineComponent, effect } from "vue";
+import ValueRangeEffect from "../effects/ValueRangeEffectVue.vue";
 
 export default defineComponent({
   name: "OscillatorVue",
-  components: { EffectSelect },
+  components: { EffectSelect, ValueRangeEffect },
   props: {
     audioContext: {
       type: AudioContext,
@@ -96,36 +104,33 @@ export default defineComponent({
       muted: true,
       oscillatorNode: this.activeOsc.osc,
       gainNode: this.activeOsc.gainNode,
-      panNode: null as StereoPannerNode | null,
-      delayNode: null as DelayNode | null,
+      panNode: this.audioContext.createStereoPanner(),
+      delayNode: this.audioContext.createDelay(),
+      activeEffects: [] as string[],
     };
   },
   mounted() {
     const ctx = this.audioContext;
-    const osc = this.oscillatorNode;
-    const gainNode = this.gainNode;
 
-    osc.frequency.setValueAtTime(
+    this.oscillatorNode.frequency.setValueAtTime(
       parseFloat((this.$refs.freqCtrl as HTMLInputElement).value),
       ctx.currentTime
     );
-    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    this.gainNode.gain.setValueAtTime(0, ctx.currentTime);
 
     // Initialise and connect all available effects
-    this.panNode = ctx.createStereoPanner();
     this.panNode.pan.setValueAtTime(0, ctx.currentTime);
 
-    this.delayNode = ctx.createDelay();
     this.delayNode.delayTime.setValueAtTime(0, ctx.currentTime);
 
-    osc
+    this.oscillatorNode
       .connect(this.panNode)
       .connect(this.delayNode)
-      .connect(gainNode)
+      .connect(this.gainNode)
       .connect(ctx.destination);
 
     // Start the oscillator
-    osc.start();
+    this.oscillatorNode.start();
   },
   methods: {
     handleUnMute() {
@@ -163,9 +168,17 @@ export default defineComponent({
       }
     },
     handleEffectSelected(activeEffects: string[]) {
-      console.log("Effect selected");
-      // Handle the selected effects here
-      console.log("Selected effects:", activeEffects);
+      this.activeEffects = activeEffects;
+    },
+    getEffectNode(effect: string): AudioNode {
+      switch (effect) {
+        case "pan":
+          return this.panNode;
+        case "delay":
+          return this.delayNode;
+        default:
+          throw new Error(`Invalid effect: ${effect}`);
+      }
     },
   },
 });
