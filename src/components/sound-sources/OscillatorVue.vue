@@ -61,7 +61,10 @@ By default has mute/unmute, gain control, and frequency control.
       @input="handleFreqChange"
     />
   </div>
-  <EffectSelect :availableEffects="['pan', 'delay']" />
+  <EffectSelect
+    :availableEffects="['pan', 'delay']"
+    @select-effect="handleEffectSelected"
+  />
 </template>
 
 <script lang="ts">
@@ -69,7 +72,7 @@ import { mute, changeGain } from "@/utils/gainUtils";
 import { changeFreq } from "@/utils/oscillatorUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
 import { OscInstance } from "@/types";
-import { defineComponent } from "vue";
+import { defineComponent, effect } from "vue";
 
 export default defineComponent({
   name: "OscillatorVue",
@@ -158,6 +161,11 @@ export default defineComponent({
           this.oscillatorNode
         );
       }
+    },
+    handleEffectSelected(activeEffects: string[]) {
+      console.log("Effect selected");
+      // Handle the selected effects here
+      console.log("Selected effects:", activeEffects);
     },
   },
 });

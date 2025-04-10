@@ -85,9 +85,9 @@ export default defineComponent({
 
     this.bandPassNode = ctx.createBiquadFilter();
     this.bandPassNode.type = "bandpass";
-    /* frequencies refers to the middle frequency of the bandpass filter,
+    /* frequency refers to the middle frequency of the bandpass filter,
     so is initialised to the middle of the available range. The Q is initalised 
-    to 0 to give the widest possible bandwidth */
+    to 1 to give the widest possible bandwidth */
     this.bandPassNode.frequency.setValueAtTime(
       getCentreFrequency(10, 15000),
       ctx.currentTime
@@ -99,6 +99,9 @@ export default defineComponent({
     noiseSource
       .connect(this.panNode)
       .connect(this.delayNode)
+      .connect(this.lowPassNode)
+      .connect(this.highPassNode)
+      .connect(this.bandPassNode)
       .connect(gainNode)
       .connect(ctx.destination);
 
