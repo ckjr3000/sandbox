@@ -50,6 +50,11 @@ export default defineComponent({
       muted: true,
       noiseSource: this.activeNoiseSource.noiseSource,
       gainNode: this.activeNoiseSource.gainNode,
+      panNode: null as StereoPannerNode | null,
+      delayNode: null as DelayNode | null,
+      lowPassNode: null as BiquadFilterNode | null,
+      highPassNode: null as BiquadFilterNode | null,
+      bandPassNode: null as BiquadFilterNode | null,
     };
   },
   mounted() {
@@ -58,8 +63,43 @@ export default defineComponent({
     const gainNode = this.activeNoiseSource.gainNode;
     gainNode.gain.setValueAtTime(0, ctx.currentTime);
 
-    noiseSource.connect(gainNode);
-    gainNode.connect(ctx.destination);
+    // Initialise and connect all available effects
+    this.panNode = ctx.createStereoPanner();
+    this.panNode.pan.setValueAtTime(0, ctx.currentTime);
+
+    this.delayNode = ctx.createDelay();
+    this.delayNode.delayTime.setValueAtTime(0, ctx.currentTime);
+
+    this.lowPassNode = ctx.createBiquadFilter();
+    this.lowPassNode.type = "lowpass";
+    /* frequencies below this value will be passed, so is initialised to 
+    the highest available frequency */
+    this.lowPassNode.frequency.setValueAtTime(15000, ctx.currentTime);
+
+    this.highPassNode = ctx.createBiquadFilter();
+    this.highPassNode.type = "highpass";
+    /* frequencies above this value will be passed, so is initialised to
+    the lowest available frequency */
+    this.highPassNode.frequency.setValueAtTime(20, ctx.currentTime);
+
+    this.bandPassNode = ctx.createBiquadFilter();
+    this.bandPassNode.type = "bandpass";
+    /* frequencies refers to the middle frequency of the bandpass filter,
+    so is initialised to the middle of the available range. The Q is initalised 
+    to 0 to give the widest possible bandwidth */
+    this.bandPassNode.frequency.setValueAtTime(
+      1000, // @TODO - write a method to calculate the middle of the available range
+      ctx.currentTime
+    );
+    this.bandPassNode.Q.setValueAtTime(0, ctx.currentTime);
+
+    //@TODO: explore other filters available on BiquadFilterNode
+
+    noiseSource
+      .connect(this.panNode)
+      .connect(this.delayNode)
+      .connect(gainNode)
+      .connect(ctx.destination);
 
     noiseSource.start();
     noiseSource.loop = true;
