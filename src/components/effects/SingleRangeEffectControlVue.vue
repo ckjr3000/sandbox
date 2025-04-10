@@ -24,6 +24,14 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    AudioContext: {
+      type: Object as () => AudioContext,
+      required: true,
+    },
+    effectNode: {
+      type: Object as () => AudioNode,
+      required: true,
+    },
   },
   data() {
     return {
@@ -62,6 +70,23 @@ export default defineComponent({
         this.value = 1000;
         break;
     }
+  },
+  methods: {
+    // handleValueChange(e: Event) {
+    //   const target = e.target as HTMLInputElement;
+    //   switch (this.effect) {
+    //     case "pan":
+    //       break;
+    //     case "q":
+    //       break;
+    //     case "delay":
+    //       break;
+    //     case "lowpass":
+    //       break;
+    //     case "highpass":
+    //       break;
+    //   }
+    // },
   },
 });
 </script>

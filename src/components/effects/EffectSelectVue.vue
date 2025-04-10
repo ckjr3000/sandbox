@@ -11,48 +11,48 @@
   <label for="add-effect">Add effect</label>
   <select name="add-effect" @change="handleAddEffect">
     <option value="default" selected>-</option>
-    <option v-for="(effect, i) in effectTypes" :key="i" :value="effect">
-      {{ effect }}
+    <option v-for="(effect, i) in effectTypes" :key="i" :value="effect.name">
+      {{ effect.name }}
     </option>
   </select>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { Effect } from "@/types";
 
 export default defineComponent({
   name: "EffectSelectVue",
   props: {
     availableEffects: {
-      type: Array as () => string[],
+      type: Array as () => Effect[],
       required: true,
     },
   },
   data() {
     return {
       effectTypes: this.availableEffects,
-      activeEffects: [] as string[],
-      valueRangeEffects: ["pan", "q", "delay", "filter"],
-      valueSelectEffects: ["waveshape"],
+      activeEffects: [] as Effect[],
     };
   },
   methods: {
     handleAddEffect(e: Event) {
       const selectedEffect = (e.target as HTMLSelectElement).value;
 
-      // remove the selected effect from the list of available effects
-      this.effectTypes = this.effectTypes.filter(
-        (effect) => effect !== selectedEffect
+      const effectToAdd = this.effectTypes.find(
+        (effect) => effect.name === selectedEffect
       );
 
-      // add the selected effect to the list of active effects
-      this.activeEffects.push(selectedEffect);
+      this.effectTypes = this.effectTypes.filter(
+        (effect) => effect.name !== selectedEffect
+      );
 
-      // set the selected effect to default
+      if (effectToAdd) {
+        this.activeEffects.push(effectToAdd);
+        this.$emit("select-effect", [...this.activeEffects]);
+      }
+
       (e.target as HTMLSelectElement).value = "default";
-
-      // emit the selected effect to the parent component
-      this.$emit("select-effect", this.activeEffects);
     },
   },
 });

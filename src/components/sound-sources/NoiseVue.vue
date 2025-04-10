@@ -20,14 +20,25 @@ Component for a white noise sound source.
     />
   </div>
   <EffectSelect
-    :availableEffects="['pan', 'q', 'delay', 'lowpass', 'highpass', 'bandpass']"
+    :availableEffects="availableEffects"
+    @select-effect="handleEffectSelected"
   />
+  <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
+    <SingleRangeEffectControl
+      v-if="effect.controlType === 'single-range'"
+      :key="i"
+      :effect="effect.name"
+      :AudioContext="audioContext"
+      :effectNode="getEffectNode(effect.name)"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import { mute, changeGain } from "@/utils/gainUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
-import { NoiseInstance } from "@/types";
+import SingleRangeEffectControl from "../effects/SingleRangeEffectControlVue.vue";
+import { NoiseInstance, Effect } from "@/types";
 import { defineComponent } from "vue";
 import { getCentreFrequency } from "@/utils/audioUtils";
 
@@ -35,6 +46,7 @@ export default defineComponent({
   name: "NoiseVue",
   components: {
     EffectSelect,
+    SingleRangeEffectControl,
   },
   props: {
     audioContext: {
@@ -51,11 +63,19 @@ export default defineComponent({
       muted: true,
       noiseSource: this.activeNoiseSource.noiseSource,
       gainNode: this.activeNoiseSource.gainNode,
-      panNode: null as StereoPannerNode | null,
-      delayNode: null as DelayNode | null,
-      lowPassNode: null as BiquadFilterNode | null,
-      highPassNode: null as BiquadFilterNode | null,
-      bandPassNode: null as BiquadFilterNode | null,
+      availableEffects: [
+        { name: "pan", controlType: "single-range" },
+        { name: "delay", controlType: "single-range" },
+        { name: "lowpass", controlType: "single-range" },
+        { name: "highpass", controlType: "single-range" },
+        { name: "bandpass", controlType: "dual-range" },
+      ] as Effect[],
+      panNode: this.audioContext.createStereoPanner(),
+      delayNode: this.audioContext.createDelay(),
+      lowPassNode: this.audioContext.createBiquadFilter(),
+      highPassNode: this.audioContext.createBiquadFilter(),
+      bandPassNode: this.audioContext.createBiquadFilter(),
+      activeEffects: [] as Effect[],
     };
   },
   mounted() {
@@ -65,25 +85,20 @@ export default defineComponent({
     gainNode.gain.setValueAtTime(0, ctx.currentTime);
 
     // Initialise and connect all available effects
-    this.panNode = ctx.createStereoPanner();
     this.panNode.pan.setValueAtTime(0, ctx.currentTime);
 
-    this.delayNode = ctx.createDelay();
     this.delayNode.delayTime.setValueAtTime(0, ctx.currentTime);
 
-    this.lowPassNode = ctx.createBiquadFilter();
     this.lowPassNode.type = "lowpass";
     /* frequencies below this value will be passed, so is initialised to 
     the highest available frequency */
     this.lowPassNode.frequency.setValueAtTime(15000, ctx.currentTime);
 
-    this.highPassNode = ctx.createBiquadFilter();
     this.highPassNode.type = "highpass";
     /* frequencies above this value will be passed, so is initialised to
     the lowest available frequency */
     this.highPassNode.frequency.setValueAtTime(20, ctx.currentTime);
 
-    this.bandPassNode = ctx.createBiquadFilter();
     this.bandPassNode.type = "bandpass";
     /* frequency refers to the middle frequency of the bandpass filter,
     so is initialised to the middle of the available range. The Q is initalised 
@@ -131,6 +146,25 @@ export default defineComponent({
           this.muted,
           this.gainNode
         );
+      }
+    },
+    handleEffectSelected(activeEffects: Effect[]) {
+      this.activeEffects = [...activeEffects];
+    },
+    getEffectNode(effect: string): AudioNode {
+      switch (effect) {
+        case "pan":
+          return this.panNode;
+        case "delay":
+          return this.delayNode;
+        case "lowpass":
+          return this.lowPassNode;
+        case "highpass":
+          return this.highPassNode;
+        case "bandpass":
+          return this.bandPassNode;
+        default:
+          throw new Error(`Invalid effect: ${effect}`);
       }
     },
   },

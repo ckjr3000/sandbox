@@ -14,3 +14,8 @@ export interface NoiseInstance {
   noiseSource: AudioBufferSourceNode;
   gainNode: GainNode;
 }
+
+export interface Effect {
+  name: string;
+  controlType: "single-range" | "dual-range" | "select";
+}

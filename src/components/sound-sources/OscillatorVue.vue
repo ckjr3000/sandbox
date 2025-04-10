@@ -62,29 +62,31 @@ By default has mute/unmute, gain control, and frequency control.
     />
   </div>
   <EffectSelect
-    :availableEffects="['pan', 'delay']"
+    :availableEffects="availableEffects"
     @select-effect="handleEffectSelected"
   />
-  <ValueRangeEffect
-    v-for="(effect, i) in activeEffects"
-    :key="i"
-    :effect="effect"
-    :AudioContext="audioContext"
-    :effectNode="getEffectNode(effect)"
-  />
+  <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
+    <SingleRangeEffectControl
+      v-if="effect.controlType === 'single-range'"
+      :key="i"
+      :effect="effect.name"
+      :AudioContext="audioContext"
+      :effectNode="getEffectNode(effect.name)"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { OscInstance } from "@/types";
+import { OscInstance, Effect } from "@/types";
 import { mute, changeGain } from "@/utils/gainUtils";
 import { changeFreq } from "@/utils/oscillatorUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
-import ValueRangeEffect from "../effects/ValueRangeEffectVue.vue";
+import SingleRangeEffectControl from "../effects/SingleRangeEffectControlVue.vue";
 
 export default defineComponent({
   name: "OscillatorVue",
-  components: { EffectSelect, ValueRangeEffect },
+  components: { EffectSelect, SingleRangeEffectControl },
   props: {
     audioContext: {
       type: AudioContext,
@@ -106,7 +108,11 @@ export default defineComponent({
       gainNode: this.activeOsc.gainNode,
       panNode: this.audioContext.createStereoPanner(),
       delayNode: this.audioContext.createDelay(),
-      activeEffects: [] as string[],
+      availableEffects: [
+        { name: "pan", controlType: "single-range" },
+        { name: "delay", controlType: "single-range" },
+      ] as Effect[],
+      activeEffects: [] as Effect[],
     };
   },
   mounted() {
@@ -167,8 +173,8 @@ export default defineComponent({
         );
       }
     },
-    handleEffectSelected(activeEffects: string[]) {
-      this.activeEffects = activeEffects;
+    handleEffectSelected(activeEffects: Effect[]) {
+      this.activeEffects = [...activeEffects];
     },
     getEffectNode(effect: string): AudioNode {
       switch (effect) {
