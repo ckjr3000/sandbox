@@ -3,15 +3,17 @@ Component for any audio effect that uses a range input to set value.
 -->
 
 <template>
-  <label :for="`${effect}-ctrl`">{{ effect }}</label>
+  <label :for="`${effect.name}-ctrl`">{{ effect.name }}</label>
   <input
+    v-for="param in effect.params"
+    :key="param.name"
     type="range"
-    :name="`${effect}-ctrl`"
-    :ref="`${effect}Ctrl`"
-    :min="minValue"
-    :max="maxValue"
-    :step="stepValue"
-    :value="value"
+    :name="`${effect.name}-ctrl`"
+    :ref="`${effect.name}Ctrl`"
+    :min="param.min"
+    :max="param.max"
+    :step="param.step"
+    :value="param.value"
     @input="handleValueChange"
   />
 </template>
@@ -19,11 +21,12 @@ Component for any audio effect that uses a range input to set value.
 <script lang="ts">
 import { defineComponent } from "vue";
 import * as control from "@/utils/controlUtils";
+import { Effect } from "@/types";
 
 export default defineComponent({
   props: {
     effect: {
-      type: String,
+      type: Object as () => Effect,
       required: true,
     },
     audioContext: {
@@ -44,7 +47,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    switch (this.effect) {
+    switch (this.effect.name) {
       case "pan":
         this.minValue = -1;
         this.maxValue = 1;
@@ -75,7 +78,7 @@ export default defineComponent({
   methods: {
     handleValueChange(e: Event) {
       const target = e.target as HTMLInputElement;
-      switch (this.effect) {
+      switch (this.effect.name) {
         case "pan":
           control.changePan(
             this.audioContext,

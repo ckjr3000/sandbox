@@ -69,7 +69,7 @@ By default has mute/unmute, gain control, and frequency control.
     <SingleRangeEffectControl
       v-if="effect.controlType === 'range'"
       :key="i"
-      :effect="effect.name"
+      :effect="effect"
       :audioContext="audioContext"
       :effectNode="getEffectNode(effect.name)"
     />
@@ -82,11 +82,11 @@ import { OscInstance, Effect } from "@/types";
 import * as control from "@/utils/controlUtils";
 import * as effects from "@/utils/effectDefinitions";
 import EffectSelect from "../effects/EffectSelectVue.vue";
-import SingleRangeEffectControl from "../effects/SingleRangeEffectControlVue.vue";
+import RangeEffectControl from "../effects/RangeEffectControlVue.vue";
 
 export default defineComponent({
   name: "OscillatorVue",
-  components: { EffectSelect, SingleRangeEffectControl },
+  components: { EffectSelect, RangeEffectControl },
   props: {
     audioContext: {
       type: AudioContext,

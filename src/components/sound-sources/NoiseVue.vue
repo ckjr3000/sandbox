@@ -24,10 +24,10 @@ Component for a white noise sound source.
     @select-effect="handleEffectSelected"
   />
   <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
-    <SingleRangeEffectControl
+    <RangeEffectControl
       v-if="effect.controlType === 'range'"
       :key="i"
-      :effect="effect.name"
+      :effect="effect"
       :audioContext="audioContext"
       :effectNode="getEffectNode(effect.name)"
     />
@@ -38,7 +38,7 @@ Component for a white noise sound source.
 import * as control from "@/utils/controlUtils";
 import * as effects from "@/utils/effectDefinitions";
 import EffectSelect from "../effects/EffectSelectVue.vue";
-import SingleRangeEffectControl from "../effects/SingleRangeEffectControlVue.vue";
+import RangeEffectControl from "../effects/RangeEffectControlVue.vue";
 import { NoiseInstance, Effect } from "@/types";
 import { defineComponent } from "vue";
 import { getCentreFrequency } from "@/utils/audioUtils";
@@ -47,7 +47,7 @@ export default defineComponent({
   name: "NoiseVue",
   components: {
     EffectSelect,
-    SingleRangeEffectControl,
+    RangeEffectControl,
   },
   props: {
     audioContext: {
