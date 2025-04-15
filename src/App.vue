@@ -49,9 +49,7 @@ The audio context is initialised here and passed to child components.
 <script lang="ts">
 import Noise from "./components/sound-sources/NoiseVue.vue";
 import Oscillator from "./components/sound-sources/OscillatorVue.vue";
-import { createGainNode } from "./utils/gainUtils";
-import { createOscillator } from "./utils/oscillatorUtils";
-import { createWhiteNoiseSource } from "./utils/audioUtils";
+import * as audio from "@/utils/audioUtils";
 import { OscInstance, NoiseInstance } from "./types";
 import { defineComponent } from "vue";
 
@@ -69,8 +67,8 @@ export default defineComponent({
     handleAddSoundSrc(src: string) {
       if (["Osc - low", "Osc - mid", "Osc - high"].includes(src)) {
         const ctx = this.audioContext;
-        const osc = createOscillator(ctx);
-        const gainNode = createGainNode(ctx);
+        const osc = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
 
         const oscInstance = {
           type: src,
@@ -81,8 +79,8 @@ export default defineComponent({
         this.oscillators.push(oscInstance);
       } else if (src === "Noise") {
         const ctx = this.audioContext;
-        const noiseSource = createWhiteNoiseSource(ctx);
-        const gainNode = createGainNode(ctx);
+        const noiseSource = audio.createWhiteNoiseSource(ctx);
+        const gainNode = this.audioContext.createGain();
 
         const noiseInstance: NoiseInstance = {
           noiseSource,

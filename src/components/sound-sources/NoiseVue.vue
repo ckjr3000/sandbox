@@ -35,7 +35,7 @@ Component for a white noise sound source.
 </template>
 
 <script lang="ts">
-import { mute, changeGain } from "@/utils/gainUtils";
+import * as control from "@/utils/controlUtils";
 import EffectSelect from "../effects/EffectSelectVue.vue";
 import SingleRangeEffectControl from "../effects/SingleRangeEffectControlVue.vue";
 import { NoiseInstance, Effect } from "@/types";
@@ -126,7 +126,7 @@ export default defineComponent({
   methods: {
     handleUnMute() {
       this.muted = false;
-      changeGain(
+      control.changeGain(
         this.audioContext,
         parseFloat((this.$refs.gainCtrl as HTMLInputElement).value),
         this.muted,
@@ -135,12 +135,12 @@ export default defineComponent({
     },
     handleMute() {
       this.muted = true;
-      mute(this.audioContext, this.gainNode);
+      control.mute(this.audioContext, this.gainNode);
     },
     handleGainChange(e: Event) {
       const target = e.target as HTMLInputElement;
       if (target.value) {
-        changeGain(
+        control.changeGain(
           this.audioContext,
           parseFloat(target.value),
           this.muted,
