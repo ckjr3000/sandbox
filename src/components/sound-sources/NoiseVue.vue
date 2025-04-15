@@ -25,7 +25,7 @@ Component for a white noise sound source.
   />
   <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
     <SingleRangeEffectControl
-      v-if="effect.controlType === 'single-range'"
+      v-if="effect.controlType === 'range'"
       :key="i"
       :effect="effect.name"
       :audioContext="audioContext"
@@ -36,6 +36,7 @@ Component for a white noise sound source.
 
 <script lang="ts">
 import * as control from "@/utils/controlUtils";
+import * as effects from "@/utils/effectDefinitions";
 import EffectSelect from "../effects/EffectSelectVue.vue";
 import SingleRangeEffectControl from "../effects/SingleRangeEffectControlVue.vue";
 import { NoiseInstance, Effect } from "@/types";
@@ -64,11 +65,11 @@ export default defineComponent({
       noiseSource: this.activeNoiseSource.noiseSource,
       gainNode: this.activeNoiseSource.gainNode,
       availableEffects: [
-        { name: "pan", controlType: "single-range" },
-        { name: "delay", controlType: "single-range" },
-        { name: "lowpass", controlType: "single-range" },
-        { name: "highpass", controlType: "single-range" },
-        { name: "bandpass", controlType: "dual-range" },
+        effects.panEffect,
+        effects.delayEffect,
+        effects.lowpassEffect,
+        effects.highpassEffect,
+        effects.bandpassEffect,
       ] as Effect[],
       panNode: this.audioContext.createStereoPanner(),
       delayNode: this.audioContext.createDelay(),

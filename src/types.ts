@@ -15,7 +15,18 @@ export interface NoiseInstance {
   gainNode: GainNode;
 }
 
+export interface RangeEffectParameter {
+  name: string;
+  min: number;
+  max: number;
+  default: number;
+  step: number;
+  value: number;
+}
+
 export interface Effect {
   name: string;
-  controlType: "single-range" | "dual-range" | "select";
+  controlType: "range" | "select";
+  params?: RangeEffectParameter[]; // for range
+  options?: string[]; // for select
 }

@@ -67,7 +67,7 @@ By default has mute/unmute, gain control, and frequency control.
   />
   <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
     <SingleRangeEffectControl
-      v-if="effect.controlType === 'single-range'"
+      v-if="effect.controlType === 'range'"
       :key="i"
       :effect="effect.name"
       :audioContext="audioContext"
@@ -80,6 +80,7 @@ By default has mute/unmute, gain control, and frequency control.
 import { defineComponent } from "vue";
 import { OscInstance, Effect } from "@/types";
 import * as control from "@/utils/controlUtils";
+import * as effects from "@/utils/effectDefinitions";
 import EffectSelect from "../effects/EffectSelectVue.vue";
 import SingleRangeEffectControl from "../effects/SingleRangeEffectControlVue.vue";
 
@@ -107,10 +108,7 @@ export default defineComponent({
       gainNode: this.activeOsc.gainNode,
       panNode: this.audioContext.createStereoPanner(),
       delayNode: this.audioContext.createDelay(),
-      availableEffects: [
-        { name: "pan", controlType: "single-range" },
-        { name: "delay", controlType: "single-range" },
-      ] as Effect[],
+      availableEffects: [effects.panEffect, effects.delayEffect] as Effect[],
       activeEffects: [] as Effect[],
     };
   },
