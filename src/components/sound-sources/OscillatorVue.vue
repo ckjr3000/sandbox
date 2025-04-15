@@ -66,7 +66,7 @@ By default has mute/unmute, gain control, and frequency control.
     @select-effect="handleEffectSelected"
   />
   <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
-    <SingleRangeEffectControl
+    <RangeEffectControl
       v-if="effect.controlType === 'range'"
       :key="i"
       :effect="effect"

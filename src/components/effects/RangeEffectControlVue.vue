@@ -38,43 +38,6 @@ export default defineComponent({
       required: true,
     },
   },
-  data() {
-    return {
-      minValue: 0 as number,
-      maxValue: 0 as number,
-      stepValue: 0 as number,
-      value: 0 as number,
-    };
-  },
-  mounted() {
-    switch (this.effect.name) {
-      case "pan":
-        this.minValue = -1;
-        this.maxValue = 1;
-        this.stepValue = 0.01;
-        this.value = 0;
-        break;
-      case "q":
-        this.minValue = 0;
-        this.maxValue = 100;
-        this.stepValue = 0.01;
-        this.value = 1;
-        break;
-      case "delay":
-        this.minValue = 0;
-        this.maxValue = 1;
-        this.stepValue = 0.01;
-        this.value = 0.5;
-        break;
-      case "lowpass":
-      case "highpass":
-        this.minValue = 20;
-        this.maxValue = 20000;
-        this.stepValue = 1;
-        this.value = 1000;
-        break;
-    }
-  },
   methods: {
     handleValueChange(e: Event) {
       const target = e.target as HTMLInputElement;
