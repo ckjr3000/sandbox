@@ -70,7 +70,7 @@ By default has mute/unmute, gain control, and frequency control.
       v-if="effect.controlType === 'single-range'"
       :key="i"
       :effect="effect.name"
-      :AudioContext="audioContext"
+      :audioContext="audioContext"
       :effectNode="getEffectNode(effect.name)"
     />
   </div>

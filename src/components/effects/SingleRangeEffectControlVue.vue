@@ -12,11 +12,13 @@ Component for any audio effect that uses a range input to set value.
     :max="maxValue"
     :step="stepValue"
     :value="value"
+    @input="handleValueChange"
   />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import * as control from "@/utils/controlUtils";
 
 export default defineComponent({
   props: {
@@ -24,7 +26,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    AudioContext: {
+    audioContext: {
       type: Object as () => AudioContext,
       required: true,
     },
@@ -72,21 +74,24 @@ export default defineComponent({
     }
   },
   methods: {
-    // handleValueChange(e: Event) {
-    //   const target = e.target as HTMLInputElement;
-    //   switch (this.effect) {
-    //     case "pan":
-    //       break;
-    //     case "q":
-    //       break;
-    //     case "delay":
-    //       break;
-    //     case "lowpass":
-    //       break;
-    //     case "highpass":
-    //       break;
-    //   }
-    // },
+    handleValueChange(e: Event) {
+      const target = e.target as HTMLInputElement;
+      switch (this.effect) {
+        case "pan":
+          control.changePan(
+            this.audioContext,
+            parseFloat(target.value),
+            this.effectNode as StereoPannerNode
+          );
+          break;
+        case "delay":
+          break;
+        case "lowpass":
+          break;
+        case "highpass":
+          break;
+      }
+    },
   },
 });
 </script>

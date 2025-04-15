@@ -28,7 +28,7 @@ Component for a white noise sound source.
       v-if="effect.controlType === 'single-range'"
       :key="i"
       :effect="effect.name"
-      :AudioContext="audioContext"
+      :audioContext="audioContext"
       :effectNode="getEffectNode(effect.name)"
     />
   </div>
