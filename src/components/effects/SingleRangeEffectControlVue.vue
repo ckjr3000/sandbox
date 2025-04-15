@@ -65,7 +65,6 @@ export default defineComponent({
         break;
       case "lowpass":
       case "highpass":
-      case "bandpass":
         this.minValue = 20;
         this.maxValue = 20000;
         this.stepValue = 1;
@@ -85,10 +84,19 @@ export default defineComponent({
           );
           break;
         case "delay":
+          control.changeDelay(
+            this.audioContext,
+            parseFloat(target.value),
+            this.effectNode as DelayNode
+          );
           break;
         case "lowpass":
-          break;
         case "highpass":
+          control.changeFilterFrequency(
+            this.audioContext,
+            parseFloat(target.value),
+            this.effectNode as BiquadFilterNode
+          );
           break;
       }
     },

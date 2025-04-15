@@ -1,3 +1,7 @@
+/*
+    Event handlers for value changes on audio effects
+*/
+
 export function changeGain(
   ctx: AudioContext,
   gainVal: number,
@@ -15,15 +19,6 @@ export function mute(ctx: AudioContext, gainNode: GainNode) {
   gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.05);
 }
 
-export function changePan(
-  ctx: AudioContext,
-  panVal: number,
-  stereoPanner: StereoPannerNode
-) {
-  stereoPanner.pan.setValueAtTime(stereoPanner.pan.value, ctx.currentTime);
-  stereoPanner.pan.linearRampToValueAtTime(panVal, ctx.currentTime + 0.005);
-}
-
 export function changeFreq(
   ctx: AudioContext,
   freqVal: number,
@@ -33,4 +28,52 @@ export function changeFreq(
     freqVal,
     ctx.currentTime + 0.05
   );
+}
+
+export function changePan(
+  ctx: AudioContext,
+  panVal: number,
+  stereoPanner: StereoPannerNode
+) {
+  stereoPanner.pan.setValueAtTime(stereoPanner.pan.value, ctx.currentTime);
+  stereoPanner.pan.linearRampToValueAtTime(panVal, ctx.currentTime + 0.05);
+}
+
+export function changeDelay(
+  ctx: AudioContext,
+  delayTime: number,
+  delayNode: DelayNode
+) {
+  delayNode.delayTime.setValueAtTime(
+    delayNode.delayTime.value,
+    ctx.currentTime
+  );
+  delayNode.delayTime.linearRampToValueAtTime(
+    delayTime,
+    ctx.currentTime + 0.05
+  );
+}
+
+export function changeFilterFrequency(
+  ctx: AudioContext,
+  filterFreq: number,
+  filterNode: BiquadFilterNode
+) {
+  filterNode.frequency.setValueAtTime(
+    filterNode.frequency.value,
+    ctx.currentTime
+  );
+  filterNode.frequency.linearRampToValueAtTime(
+    filterFreq,
+    ctx.currentTime + 0.05
+  );
+}
+
+export function changeFilterQ(
+  ctx: AudioContext,
+  filterQ: number,
+  filterNode: BiquadFilterNode
+) {
+  filterNode.Q.setValueAtTime(filterNode.Q.value, ctx.currentTime);
+  filterNode.Q.linearRampToValueAtTime(filterQ, ctx.currentTime + 0.05);
 }
