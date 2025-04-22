@@ -4,6 +4,7 @@ Component for a white noise sound source.
 
 <template>
   <h2>Noise</h2>
+  <button @click="handleRemove">Remove</button>
   <button v-show="!muted" ref="muteBtn" @click="handleMute">Mute</button>
   <button v-show="muted" ref="unmuteBtn" @click="handleUnMute">Unmute</button>
   <div class="gain">
@@ -167,6 +168,18 @@ export default defineComponent({
         default:
           throw new Error(`Invalid effect: ${effect}`);
       }
+    },
+    handleRemove() {
+      /* @TODO - maybe rethink this approach for a tidier solution, using this.gainNode.disconnect()
+      leaves some ocsillators still sounding after being removed, not sure why */
+      try {
+        this.noiseSource.stop();
+      } catch (e) {
+        console.warn("Sound already stopped or not running");
+      }
+
+      // emit the id to the parent to remove from UI
+      this.$emit("noiseRemoved", this.activeNoiseSource.id);
     },
   },
 });

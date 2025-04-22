@@ -41,6 +41,7 @@ The audio context is initialised here and passed to child components.
           ref="noiseSourceRefs"
           :audioContext="audioContext"
           :activeNoiseSource="noiseSource"
+          @noise-removed="handleRemoveNoise"
         />
       </div>
     </div>
@@ -98,7 +99,10 @@ export default defineComponent({
     handleRemoveOsc(oscId: number) {
       let i = this.oscillators.map((osc) => osc.id).indexOf(oscId);
       this.oscillators.splice(i, 1);
-      console.log(this.oscillators);
+    },
+    handleRemoveNoise(noiseId: number) {
+      let i = this.noiseSources.map((src) => src.id).indexOf(noiseId);
+      this.noiseSources.splice(i, 1);
     },
   },
 });
