@@ -63,8 +63,8 @@ export default defineComponent({
   data() {
     return {
       muted: true,
-      noiseSource: this.activeNoiseSource.noiseSource,
-      gainNode: this.activeNoiseSource.gainNode,
+      // noiseSource: this.activeNoiseSource.noiseSource,
+      // gainNode: this.activeNoiseSource.gainNode,
       availableEffects: [
         effects.panEffect,
         effects.delayEffect,
@@ -132,12 +132,12 @@ export default defineComponent({
         this.audioContext,
         parseFloat((this.$refs.gainCtrl as HTMLInputElement).value),
         this.muted,
-        this.gainNode
+        this.activeNoiseSource.gainNode
       );
     },
     handleMute() {
       this.muted = true;
-      control.mute(this.audioContext, this.gainNode);
+      control.mute(this.audioContext, this.activeNoiseSource.gainNode);
     },
     handleGainChange(e: Event) {
       const target = e.target as HTMLInputElement;
@@ -146,7 +146,7 @@ export default defineComponent({
           this.audioContext,
           parseFloat(target.value),
           this.muted,
-          this.gainNode
+          this.activeNoiseSource.gainNode
         );
       }
     },
@@ -170,13 +170,8 @@ export default defineComponent({
       }
     },
     handleRemove() {
-      /* @TODO - maybe rethink this approach for a tidier solution, using this.gainNode.disconnect()
-      leaves some ocsillators still sounding after being removed, not sure why */
-      try {
-        this.noiseSource.stop();
-      } catch (e) {
-        console.warn("Sound already stopped or not running");
-      }
+      // @TODO - garbage collection here
+      this.activeNoiseSource.gainNode.disconnect();
 
       // emit the id to the parent to remove from UI
       this.$emit("noiseRemoved", this.activeNoiseSource.id);

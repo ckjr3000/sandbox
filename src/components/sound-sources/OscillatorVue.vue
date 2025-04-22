@@ -103,8 +103,8 @@ export default defineComponent({
   data() {
     return {
       muted: true,
-      oscillatorNode: this.activeOsc.osc,
-      gainNode: this.activeOsc.gainNode,
+      //oscillatorNode: this.activeOsc.osc,
+      //gainNode: this.activeOsc.gainNode,
       panNode: this.audioContext.createStereoPanner(),
       delayNode: this.audioContext.createDelay(),
       availableEffects: [effects.panEffect, effects.delayEffect] as Effect[],
@@ -114,27 +114,25 @@ export default defineComponent({
   mounted() {
     const ctx = this.audioContext;
 
-    this.oscillatorNode.frequency.setValueAtTime(
+    this.activeOsc.osc.frequency.setValueAtTime(
       parseFloat((this.$refs.freqCtrl as HTMLInputElement).value),
       ctx.currentTime
     );
-    this.gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    this.activeOsc.gainNode.gain.setValueAtTime(0, ctx.currentTime);
 
     // Initialise and connect all available effects
     this.panNode.pan.setValueAtTime(0, ctx.currentTime);
 
     this.delayNode.delayTime.setValueAtTime(0, ctx.currentTime);
 
-    this.oscillatorNode
+    this.activeOsc.osc
       .connect(this.panNode)
       .connect(this.delayNode)
-      .connect(this.gainNode)
+      .connect(this.activeOsc.gainNode)
       .connect(ctx.destination);
 
-    console.log(ctx.destination);
-
     // Start the oscillator
-    this.oscillatorNode.start();
+    this.activeOsc.osc.start();
   },
   methods: {
     handleUnMute() {
@@ -143,12 +141,12 @@ export default defineComponent({
         this.audioContext,
         parseFloat((this.$refs.gainCtrl as HTMLInputElement).value),
         this.muted,
-        this.gainNode
+        this.activeOsc.gainNode
       );
     },
     handleMute() {
       this.muted = true;
-      control.mute(this.audioContext, this.gainNode);
+      control.mute(this.audioContext, this.activeOsc.gainNode);
     },
     handleGainChange(e: Event) {
       const target = e.target as HTMLInputElement;
@@ -157,7 +155,7 @@ export default defineComponent({
           this.audioContext,
           parseFloat(target.value),
           this.muted,
-          this.gainNode
+          this.activeOsc.gainNode
         );
       }
     },
@@ -167,7 +165,7 @@ export default defineComponent({
         control.changeFreq(
           this.audioContext,
           parseFloat(target.value),
-          this.oscillatorNode
+          this.activeOsc.osc
         );
       }
     },
@@ -185,13 +183,8 @@ export default defineComponent({
       }
     },
     handleRemove() {
-      /* @TODO - maybe rethink this approach for a tidier solution, using this.gainNode.disconnect()
-      leaves some ocsillators still sounding after being removed, not sure why */
-      try {
-        this.oscillatorNode.stop();
-      } catch (e) {
-        console.warn("Oscillator already stopped or not running");
-      }
+      // @TODO - proper garbage collection of leftover nodes after disconnecting
+      this.activeOsc.gainNode.disconnect();
 
       // emit the id to the parent to remove from UI
       this.$emit("oscRemoved", this.activeOsc.id);
