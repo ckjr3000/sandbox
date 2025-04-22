@@ -27,6 +27,7 @@ The audio context is initialised here and passed to child components.
           :audioContext="audioContext"
           :oscType="oscillator.type"
           :activeOsc="oscillator"
+          @osc-removed="handleRemoveOsc"
         />
       </div>
     </div>
@@ -93,6 +94,11 @@ export default defineComponent({
         };
         this.noiseSources.push(noiseInstance);
       }
+    },
+    handleRemoveOsc(oscId: number) {
+      let i = this.oscillators.map((osc) => osc.id).indexOf(oscId);
+      this.oscillators.splice(i, 1);
+      console.log(this.oscillators);
     },
   },
 });

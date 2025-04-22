@@ -131,6 +131,8 @@ export default defineComponent({
       .connect(this.gainNode)
       .connect(ctx.destination);
 
+    console.log(ctx.destination);
+
     // Start the oscillator
     this.oscillatorNode.start();
   },
@@ -183,10 +185,16 @@ export default defineComponent({
       }
     },
     handleRemove() {
-      // disconnect everything from the destination
-      this.gainNode.disconnect(this.audioContext.destination);
+      /* @TODO - maybe rethink this approach for a tidier solution, using this.gainNode.disconnect()
+      leaves some ocsillators still sounding after being removed, not sure why */
+      try {
+        this.oscillatorNode.stop();
+      } catch (e) {
+        console.warn("Oscillator already stopped or not running");
+      }
 
       // emit the id to the parent to remove from UI
+      this.$emit("oscRemoved", this.activeOsc.id);
     },
   },
 });
