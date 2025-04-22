@@ -57,15 +57,19 @@ export default defineComponent({
             this.effectNode as DelayNode
           );
           break;
-        case "lpFrequency":
-        case "hpFrequency":
+        case "frequency":
           control.changeFilterFrequency(
             this.audioContext,
             parseFloat(target.value),
             this.effectNode as BiquadFilterNode
           );
           break;
-        case "bpFrequency":
+        case "bpQ":
+          control.changeFilterQ(
+            this.audioContext,
+            parseFloat(target.value),
+            this.effectNode as BiquadFilterNode
+          );
           break;
       }
     },
