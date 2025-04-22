@@ -37,7 +37,7 @@ export const lowpassEffect = {
   controlType: "range",
   params: [
     {
-      name: "frequency",
+      name: "lpFrequency",
       min: 20,
       max: 15000,
       step: 1,
@@ -51,7 +51,7 @@ export const highpassEffect = {
   controlType: "range",
   params: [
     {
-      name: "frequency",
+      name: "hpFrequency",
       min: 20,
       max: 15000,
       step: 1,
@@ -65,14 +65,14 @@ export const bandpassEffect = {
   controlType: "range",
   params: [
     {
-      name: "frequency",
+      name: "bpFrequency",
       min: 20,
       max: 15000,
       step: 1,
       value: getCentreFrequency(20, 15000),
     },
     {
-      name: "q",
+      name: "bpQ",
       min: 1,
       max: 100,
       step: 0.1,

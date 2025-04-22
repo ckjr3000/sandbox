@@ -37,8 +37,8 @@ Component for a white noise sound source.
 <script lang="ts">
 import * as control from "@/utils/controlUtils";
 import * as effects from "@/utils/effectDefinitions";
-import EffectSelect from "../effects/EffectSelectVue.vue";
-import RangeEffectControl from "../effects/RangeEffectControlVue.vue";
+import EffectSelect from "../controls/EffectSelectVue.vue";
+import RangeEffectControl from "../controls/RangeEffectControlVue.vue";
 import { NoiseInstance, Effect } from "@/types";
 import { defineComponent } from "vue";
 import { getCentreFrequency } from "@/utils/audioUtils";

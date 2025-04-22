@@ -8,8 +8,8 @@ Component for any audio effect that uses a range input to set value.
     v-for="param in effect.params"
     :key="param.name"
     type="range"
-    :name="`${effect.name}-ctrl`"
-    :ref="`${effect.name}Ctrl`"
+    :name="param.name"
+    :ref="`${param.name}-ctrl`"
     :min="param.min"
     :max="param.max"
     :step="param.step"
@@ -41,28 +41,31 @@ export default defineComponent({
   methods: {
     handleValueChange(e: Event) {
       const target = e.target as HTMLInputElement;
-      switch (this.effect.name) {
-        case "pan":
+      console.log(target.name);
+      switch (target.name) {
+        case "panValue":
           control.changePan(
             this.audioContext,
             parseFloat(target.value),
             this.effectNode as StereoPannerNode
           );
           break;
-        case "delay":
+        case "delayTime":
           control.changeDelay(
             this.audioContext,
             parseFloat(target.value),
             this.effectNode as DelayNode
           );
           break;
-        case "lowpass":
-        case "highpass":
+        case "lpFrequency":
+        case "hpFrequency":
           control.changeFilterFrequency(
             this.audioContext,
             parseFloat(target.value),
             this.effectNode as BiquadFilterNode
           );
+          break;
+        case "bpFrequency":
           break;
       }
     },

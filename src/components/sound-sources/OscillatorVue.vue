@@ -81,9 +81,8 @@ import { defineComponent } from "vue";
 import { OscInstance, Effect } from "@/types";
 import * as control from "@/utils/controlUtils";
 import * as effects from "@/utils/effectDefinitions";
-import EffectSelect from "../effects/EffectSelectVue.vue";
-import RangeEffectControl from "../effects/RangeEffectControlVue.vue";
-
+import EffectSelect from "../controls/EffectSelectVue.vue";
+import RangeEffectControl from "../controls/RangeEffectControlVue.vue";
 export default defineComponent({
   name: "OscillatorVue",
   components: { EffectSelect, RangeEffectControl },
