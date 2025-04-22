@@ -72,6 +72,7 @@ By default has mute/unmute, gain control, and frequency control.
       :effect="effect"
       :audioContext="audioContext"
       :effectNode="getEffectNode(effect.name)"
+      @effect-removed="handleRemoveEffect"
     />
   </div>
 </template>
@@ -103,8 +104,6 @@ export default defineComponent({
   data() {
     return {
       muted: true,
-      //oscillatorNode: this.activeOsc.osc,
-      //gainNode: this.activeOsc.gainNode,
       panNode: this.audioContext.createStereoPanner(),
       delayNode: this.audioContext.createDelay(),
       availableEffects: [effects.panEffect, effects.delayEffect] as Effect[],
@@ -169,8 +168,23 @@ export default defineComponent({
         );
       }
     },
-    handleEffectSelected(activeEffects: Effect[]) {
-      this.activeEffects = [...activeEffects];
+    handleEffectSelected(selectedEffect: Effect) {
+      // add to active effects
+      this.activeEffects.push(selectedEffect);
+
+      // remove from available effects
+      let i = this.availableEffects
+        .map((effect) => effect.name)
+        .indexOf(selectedEffect.name);
+      this.availableEffects.splice(i, 1);
+    },
+    handleRemoveEffect(effectToRemove: Effect) {
+      this.availableEffects.push(effectToRemove);
+
+      let i = this.activeEffects
+        .map((effect) => effect.name)
+        .indexOf(effectToRemove.name);
+      this.activeEffects.splice(i, 1);
     },
     getEffectNode(effect: string): AudioNode {
       switch (effect) {

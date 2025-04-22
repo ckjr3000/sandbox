@@ -3,6 +3,7 @@ Component for any audio effect that uses a range input to set value.
 -->
 
 <template>
+  <button @click="handleRemoveEffect">Remove</button>
   <label :for="`${effect.name}-ctrl`">{{ effect.name }}</label>
   <input
     v-for="param in effect.params"
@@ -72,6 +73,9 @@ export default defineComponent({
           );
           break;
       }
+    },
+    handleRemoveEffect() {
+      this.$emit("effectRemoved", this.effect);
     },
   },
 });

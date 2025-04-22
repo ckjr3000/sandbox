@@ -11,7 +11,11 @@
   <label for="add-effect">Add effect</label>
   <select name="add-effect" @change="handleAddEffect">
     <option value="default" selected>-</option>
-    <option v-for="(effect, i) in effectTypes" :key="i" :value="effect.name">
+    <option
+      v-for="(effect, i) in availableEffects"
+      :key="i"
+      :value="effect.name"
+    >
       {{ effect.name }}
     </option>
   </select>
@@ -29,27 +33,16 @@ export default defineComponent({
       required: true,
     },
   },
-  data() {
-    return {
-      effectTypes: this.availableEffects,
-      activeEffects: [] as Effect[],
-    };
-  },
   methods: {
     handleAddEffect(e: Event) {
-      const selectedEffect = (e.target as HTMLSelectElement).value;
+      const selectedEffectName = (e.target as HTMLSelectElement).value;
 
-      const effectToAdd = this.effectTypes.find(
-        (effect) => effect.name === selectedEffect
-      );
-
-      this.effectTypes = this.effectTypes.filter(
-        (effect) => effect.name !== selectedEffect
+      const effectToAdd = this.availableEffects.find(
+        (effect) => effect.name === selectedEffectName
       );
 
       if (effectToAdd) {
-        this.activeEffects.push(effectToAdd);
-        this.$emit("select-effect", [...this.activeEffects]);
+        this.$emit("select-effect", effectToAdd);
       }
 
       (e.target as HTMLSelectElement).value = "default";
