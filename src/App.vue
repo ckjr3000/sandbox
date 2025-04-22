@@ -59,6 +59,8 @@ export default defineComponent({
     return {
       audioContext: new AudioContext() as AudioContext,
       soundSrcTypes: ["Osc - low", "Osc - mid", "Osc - high", "Noise"],
+      oscId: 0,
+      noiseId: 0,
       oscillators: [] as OscInstance[],
       noiseSources: [] as NoiseInstance[],
     };
@@ -66,14 +68,15 @@ export default defineComponent({
   methods: {
     handleAddSoundSrc(src: string) {
       if (["Osc - low", "Osc - mid", "Osc - high"].includes(src)) {
-        const ctx = this.audioContext;
         const osc = this.audioContext.createOscillator();
         const gainNode = this.audioContext.createGain();
 
-        const oscInstance = {
+        this.oscId++;
+        const oscInstance: OscInstance = {
+          id: this.oscId,
           type: src,
-          osc: osc,
-          gainNode: gainNode,
+          osc,
+          gainNode,
         };
 
         this.oscillators.push(oscInstance);
@@ -82,7 +85,9 @@ export default defineComponent({
         const noiseSource = audio.createWhiteNoiseSource(ctx);
         const gainNode = this.audioContext.createGain();
 
+        this.noiseId++;
         const noiseInstance: NoiseInstance = {
+          id: this.noiseId,
           noiseSource,
           gainNode,
         };

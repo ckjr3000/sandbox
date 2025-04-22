@@ -5,12 +5,14 @@ Custom Types for the project
 */
 
 export interface OscInstance {
+  id: number;
   type: string;
   osc: OscillatorNode;
   gainNode: GainNode;
 }
 
 export interface NoiseInstance {
+  id: number;
   noiseSource: AudioBufferSourceNode;
   gainNode: GainNode;
 }

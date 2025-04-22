@@ -8,7 +8,7 @@ By default has mute/unmute, gain control, and frequency control.
 
 <template>
   <h2>{{ oscType }}</h2>
-
+  <button @click.prevent="handleRemove">Remove</button>
   <button v-show="!muted" ref="muteBtn" @click.prevent="handleMute">
     Mute
   </button>
@@ -181,6 +181,12 @@ export default defineComponent({
         default:
           throw new Error(`Invalid effect: ${effect}`);
       }
+    },
+    handleRemove() {
+      // disconnect everything from the destination
+      this.gainNode.disconnect(this.audioContext.destination);
+
+      // emit the id to the parent to remove from UI
     },
   },
 });
