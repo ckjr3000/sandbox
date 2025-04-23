@@ -3,36 +3,38 @@ Component for a white noise sound source.
 -->
 
 <template>
-  <h2>Noise</h2>
-  <button @click="handleRemove">Remove</button>
-  <button v-show="!muted" ref="muteBtn" @click="handleMute">Mute</button>
-  <button v-show="muted" ref="unmuteBtn" @click="handleUnMute">Unmute</button>
-  <div class="gain">
-    <label for="gain">Gain</label>
-    <input
-      name="gain"
-      ref="gainCtrl"
-      type="range"
-      min="0"
-      max="0.5"
-      step="any"
-      value="0.1"
-      @input="handleGainChange"
+  <div class="sound-source-component">
+    <h2>Noise</h2>
+    <button @click="handleRemove">Remove</button>
+    <button v-show="!muted" ref="muteBtn" @click="handleMute">Mute</button>
+    <button v-show="muted" ref="unmuteBtn" @click="handleUnMute">Unmute</button>
+    <div class="gain">
+      <label for="gain">Gain</label>
+      <input
+        name="gain"
+        ref="gainCtrl"
+        type="range"
+        min="0"
+        max="0.5"
+        step="any"
+        value="0.1"
+        @input="handleGainChange"
+      />
+    </div>
+    <EffectSelect
+      :availableEffects="availableEffects"
+      @select-effect="handleEffectSelected"
     />
-  </div>
-  <EffectSelect
-    :availableEffects="availableEffects"
-    @select-effect="handleEffectSelected"
-  />
-  <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
-    <RangeEffectControl
-      v-if="effect.controlType === 'range'"
-      :key="i"
-      :effect="effect"
-      :audioContext="audioContext"
-      :effectNode="getEffectNode(effect.name)"
-      @effect-removed="handleRemoveEffect"
-    />
+    <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
+      <RangeEffectControl
+        v-if="effect.controlType === 'range'"
+        :key="i"
+        :effect="effect"
+        :audioContext="audioContext"
+        :effectNode="getEffectNode(effect.name)"
+        @effect-removed="handleRemoveEffect"
+      />
+    </div>
   </div>
 </template>
 
@@ -196,4 +198,8 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style scoped>
+.sound-source-component {
+  background-color: pink;
+}
+</style>

@@ -7,73 +7,75 @@ By default has mute/unmute, gain control, and frequency control.
 -->
 
 <template>
-  <h2>{{ oscType }}</h2>
-  <button @click.prevent="handleRemove">Remove</button>
-  <button v-show="!muted" ref="muteBtn" @click.prevent="handleMute">
-    Mute
-  </button>
-  <button v-show="muted" ref="unmuteBtn" @click.prevent="handleUnMute">
-    Unmute
-  </button>
-  <div class="gain">
-    <label for="gain">Gain</label>
-    <input
-      name="gain"
-      ref="gainCtrl"
-      type="range"
-      min="0"
-      max="1"
-      step="any"
-      value="0.2"
-      @input="handleGainChange"
+  <div :class="['sound-source-component', oscTypeClass]">
+    <h2>{{ oscType }}</h2>
+    <button @click.prevent="handleRemove">Remove</button>
+    <button v-show="!muted" ref="muteBtn" @click.prevent="handleMute">
+      Mute
+    </button>
+    <button v-show="muted" ref="unmuteBtn" @click.prevent="handleUnMute">
+      Unmute
+    </button>
+    <div class="gain">
+      <label for="gain">Gain</label>
+      <input
+        name="gain"
+        ref="gainCtrl"
+        type="range"
+        min="0"
+        max="1"
+        step="any"
+        value="0.2"
+        @input="handleGainChange"
+      />
+    </div>
+    <div class="frequency">
+      <label for="frequency">Frequency:</label>
+      <input
+        v-if="oscType === 'Osc - low'"
+        name="frequency"
+        ref="freqCtrl"
+        type="range"
+        min="45"
+        max="120"
+        step="0.01"
+        @input="handleFreqChange"
+      />
+      <input
+        v-if="oscType === 'Osc - mid'"
+        name="frequency"
+        ref="freqCtrl"
+        type="range"
+        min="121"
+        max="1400"
+        step="0.01"
+        @input="handleFreqChange"
+      />
+      <input
+        v-if="oscType === 'Osc - high'"
+        name="frequency"
+        ref="freqCtrl"
+        type="range"
+        min="1401"
+        max="15000"
+        step="0.01"
+        @input="handleFreqChange"
+      />
+    </div>
+    <EffectSelect
+      :availableEffects="availableEffects"
+      @select-effect="handleEffectSelected"
     />
-  </div>
-  <div class="frequency">
-    <label for="frequency">Frequency:</label>
-    <input
-      v-if="oscType === 'Osc - low'"
-      name="frequency"
-      ref="freqCtrl"
-      type="range"
-      min="45"
-      max="120"
-      step="0.01"
-      @input="handleFreqChange"
-    />
-    <input
-      v-if="oscType === 'Osc - mid'"
-      name="frequency"
-      ref="freqCtrl"
-      type="range"
-      min="121"
-      max="1400"
-      step="0.01"
-      @input="handleFreqChange"
-    />
-    <input
-      v-if="oscType === 'Osc - high'"
-      name="frequency"
-      ref="freqCtrl"
-      type="range"
-      min="1401"
-      max="15000"
-      step="0.01"
-      @input="handleFreqChange"
-    />
-  </div>
-  <EffectSelect
-    :availableEffects="availableEffects"
-    @select-effect="handleEffectSelected"
-  />
-  <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
-    <RangeEffectControl
-      v-if="effect.controlType === 'range'"
-      :key="i"
-      :effect="effect"
-      :audioContext="audioContext"
-      :effectNode="getEffectNode(effect.name)"
-      @effect-removed="handleRemoveEffect"
-    />
+    <div class="effect" v-for="(effect, i) in activeEffects" :key="effect.name">
+      <RangeEffectControl
+        v-if="effect.controlType === 'range'"
+        :key="i"
+        :effect="effect"
+        :audioContext="audioContext"
+        :effectNode="getEffectNode(effect.name)"
+        @effect-removed="handleRemoveEffect"
+      />
+    </div>
   </div>
 </template>
 
@@ -109,6 +111,20 @@ export default defineComponent({
       availableEffects: [effects.panEffect, effects.delayEffect] as Effect[],
       activeEffects: [] as Effect[],
     };
+  },
+  computed: {
+    oscTypeClass(): string {
+      switch (this.oscType) {
+        case "Osc - low":
+          return "bg-low";
+        case "Osc - mid":
+          return "bg-mid";
+        case "Osc - high":
+          return "bg-high";
+        default:
+          return "";
+      }
+    },
   },
   mounted() {
     const ctx = this.audioContext;
@@ -206,3 +222,17 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.bg-low {
+  background-color: rgb(192, 255, 195);
+}
+
+.bg-mid {
+  background-color: rgb(192, 237, 255);
+}
+
+.bg-high {
+  background-color: rgb(255, 249, 192);
+}
+</style>

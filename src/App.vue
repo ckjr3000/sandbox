@@ -16,34 +16,55 @@ The audio context is initialised here and passed to child components.
     </button>
   </section>
   <section id="sound-sources">
+    <!-- noise sources -->
     <div class="sound-sources-group">
-      <div
-        class="sound-source-component"
-        v-for="(oscillator, i) in oscillators"
-        :key="i"
-      >
-        <Oscillator
-          ref="oscillatorRefs"
-          :audioContext="audioContext"
-          :oscType="oscillator.type"
-          :activeOsc="oscillator"
-          @osc-removed="handleRemoveOsc"
-        />
-      </div>
-    </div>
-    <div class="sound-sources-group">
-      <div
-        class="sound-source-component"
+      <Noise
         v-for="(noiseSource, i) in noiseSources"
         :key="i"
-      >
-        <Noise
-          ref="noiseSourceRefs"
-          :audioContext="audioContext"
-          :activeNoiseSource="noiseSource"
-          @noise-removed="handleRemoveNoise"
-        />
-      </div>
+        ref="noiseSourceRefs"
+        :audioContext="audioContext"
+        :activeNoiseSource="noiseSource"
+        @noise-removed="handleRemoveNoise"
+      />
+    </div>
+
+    <!-- low oscillators -->
+    <div class="sound-sources-group">
+      <Oscillator
+        v-for="(oscillator, i) in lowOscillators"
+        :key="i"
+        ref="oscillatorRefs"
+        :audioContext="audioContext"
+        :oscType="oscillator.type"
+        :activeOsc="oscillator"
+        @osc-removed="handleRemoveOsc"
+      />
+    </div>
+
+    <!-- mid oscillators -->
+    <div class="sound-sources-group">
+      <Oscillator
+        v-for="(oscillator, i) in midOscillators"
+        :key="i"
+        ref="oscillatorRefs"
+        :audioContext="audioContext"
+        :oscType="oscillator.type"
+        :activeOsc="oscillator"
+        @osc-removed="handleRemoveOsc"
+      />
+    </div>
+
+    <!-- high oscillators -->
+    <div class="sound-sources-group">
+      <Oscillator
+        v-for="(oscillator, i) in highOscillators"
+        :key="i"
+        ref="oscillatorRefs"
+        :audioContext="audioContext"
+        :oscType="oscillator.type"
+        :activeOsc="oscillator"
+        @osc-removed="handleRemoveOsc"
+      />
     </div>
   </section>
 </template>
@@ -66,6 +87,17 @@ export default defineComponent({
       oscillators: [] as OscInstance[],
       noiseSources: [] as NoiseInstance[],
     };
+  },
+  computed: {
+    lowOscillators(): OscInstance[] {
+      return this.oscillators.filter((osc) => osc.type === "Osc - low");
+    },
+    midOscillators(): OscInstance[] {
+      return this.oscillators.filter((osc) => osc.type === "Osc - mid");
+    },
+    highOscillators(): OscInstance[] {
+      return this.oscillators.filter((osc) => osc.type === "Osc - high");
+    },
   },
   methods: {
     handleAddSoundSrc(src: string) {
@@ -109,16 +141,16 @@ export default defineComponent({
 </script>
 
 <style>
-#sound-sources {
+.sound-sources-group {
   display: flex;
   flex-direction: row;
-  padding: 15px;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .sound-source-component {
-  border: 1px solid black;
-  border-radius: 20px;
-  width: fit-content;
-  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
 }
 </style>
