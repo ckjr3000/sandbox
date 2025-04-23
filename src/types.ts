@@ -32,3 +32,19 @@ export interface Effect {
   params?: RangeEffectParameter[]; // for range
   options?: string[]; // for select
 }
+
+export interface AutomationValues {
+  min: string;
+  max: string;
+  speed: string;
+}
+
+/* 
+  These are set to numbers despite the range input expecting strings 
+*/
+export interface RangeInputAttributes {
+  min: string;
+  max: string;
+  step: string;
+  value: string;
+}

@@ -5,14 +5,11 @@ Sound Sources
 - Add 'add effect' menu to source components @done
 - Add button to duplicate source in its exact state
 Effects
-- Build pan
-- Build q factor
-- Build delay
-- Build timestretch
-- Build bitcrush
+- Build pan @done
+- Build q factor @done
+- Build delay @done
 - Build wave shape selection
-- Build waveshaper
-- Build filter component (takes type prop)
+- Build filters @done
 Controls
 - Build value automation component
 Bundles

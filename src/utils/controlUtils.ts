@@ -2,6 +2,8 @@
     Event handlers for value changes on audio effects
 */
 
+import { AutomationValues } from "@/types";
+
 export function changeGain(
   ctx: AudioContext,
   gainVal: number,
@@ -36,7 +38,7 @@ export function changePan(
   stereoPanner: StereoPannerNode
 ) {
   stereoPanner.pan.setValueAtTime(stereoPanner.pan.value, ctx.currentTime);
-  stereoPanner.pan.linearRampToValueAtTime(panVal, ctx.currentTime + 0.05);
+  stereoPanner.pan.linearRampToValueAtTime(panVal, ctx.currentTime + 0.5);
 }
 
 export function changeDelay(
@@ -76,4 +78,26 @@ export function changeFilterQ(
 ) {
   filterNode.Q.setValueAtTime(filterNode.Q.value, ctx.currentTime);
   filterNode.Q.linearRampToValueAtTime(filterQ, ctx.currentTime + 0.05);
+}
+
+/*
+  Event handlers for value changes on automation controls
+*/
+
+export function randomJump(
+  ctx: AudioContext,
+  effectNode: AudioNode,
+  automationValues: AutomationValues
+) {
+  const min = parseFloat(automationValues.min);
+  const max = parseFloat(automationValues.max);
+  const speed = parseFloat(automationValues.speed);
+
+  setInterval(() => {
+    const randomVal = Math.random() * (max - min) + min;
+    console.log(randomVal);
+    if (effectNode instanceof StereoPannerNode) {
+      changePan(ctx, randomVal, effectNode);
+    }
+  }, speed);
 }

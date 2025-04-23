@@ -5,26 +5,40 @@ Component for any audio effect that uses a range input to set value.
 <template>
   <button @click="handleRemoveEffect">Remove</button>
   <label :for="`${effect.name}-ctrl`">{{ effect.name }}</label>
-  <input
-    v-for="param in effect.params"
-    :key="param.name"
-    type="range"
-    :name="param.name"
-    :ref="`${param.name}-ctrl`"
-    :min="param.min"
-    :max="param.max"
-    :step="param.step"
-    :value="param.value"
-    @input="handleValueChange"
-  />
+  <div v-for="param in effect.params" :key="param.name">
+    <input
+      type="range"
+      :name="param.name"
+      :ref="`${param.name}-ctrl`"
+      :min="param.min"
+      :max="param.max"
+      :step="param.step"
+      :value="param.value"
+      @input="handleValueChange"
+    />
+    <button
+      v-if="!showAutomationControls"
+      @click="showAutomationControls = true"
+    >
+      Automate
+    </button>
+    <AutomateRangeEffectControl
+      v-if="showAutomationControls"
+      :audioContext="audioContext"
+      :effectNode="effectNode"
+      :inputAttributes="getInputAttributes(param.name)"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import * as control from "@/utils/controlUtils";
-import { Effect } from "@/types";
+import { Effect, RangeInputAttributes } from "@/types";
+import AutomateRangeEffectControl from "./AutomateRangeEffectControlVue.vue";
 
 export default defineComponent({
+  components: { AutomateRangeEffectControl },
   props: {
     effect: {
       type: Object as () => Effect,
@@ -39,10 +53,32 @@ export default defineComponent({
       required: true,
     },
   },
+  data() {
+    return {
+      showAutomationControls: false,
+    };
+  },
   methods: {
+    getInputAttributes(paramName: string): RangeInputAttributes {
+      /* 
+        Because these input refs are created inside a v-for, vue will return this.refs
+        as an array. However, because we know that paramName will be unique (because audio
+        effects can only be added to a sound source once) we can safely assume access to
+        the input at inputArray[0].
+      */
+      const inputArray = this.$refs[`${paramName}-ctrl`] as HTMLInputElement[];
+      const input = inputArray[0];
+
+      const attributeVals = {
+        min: input.min,
+        max: input.max,
+        step: input.step,
+        value: input.value,
+      };
+      return attributeVals;
+    },
     handleValueChange(e: Event) {
       const target = e.target as HTMLInputElement;
-      console.log(target.name);
       switch (target.name) {
         case "panValue":
           control.changePan(
