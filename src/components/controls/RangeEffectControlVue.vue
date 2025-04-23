@@ -26,6 +26,7 @@ Component for any audio effect that uses a range input to set value.
       v-if="showAutomationControls"
       :inputAttributes="getInputAttributes(param.name)"
       :updateRangeInput="createRangeInputUpdater(param.name)"
+      @automation-removed="showAutomationControls = false"
     />
   </div>
 </template>

@@ -4,6 +4,7 @@
 
 <template>
   <h3>Automate</h3>
+  <button @click="handleRemove">Remove</button>
   <label for="min">min</label>
   <input
     id="min"
@@ -82,6 +83,17 @@ export default defineComponent({
 
         this.isAutomating = true;
       }
+    },
+    handleRemove() {
+      // stop automating if automation is active
+      if (this.isAutomating && this.intervalId !== null) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        this.isAutomating = false;
+      }
+
+      // then emit signal to parent to remove
+      this.$emit("automationRemoved");
     },
   },
 });
