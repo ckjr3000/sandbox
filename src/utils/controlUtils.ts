@@ -87,12 +87,13 @@ export function changeFilterQ(
 export function randomJump(
   updateInput: (value: number) => void,
   automationValues: AutomationValues
-) {
+): number {
   const min = parseFloat(automationValues.min);
   const max = parseFloat(automationValues.max);
   const speed = parseFloat(automationValues.speed);
 
-  setInterval(() => {
+  // return this so clearInterval can be called from the parent component
+  return setInterval(() => {
     const randomVal = Math.random() * (max - min) + min;
     updateInput(randomVal);
   }, speed);

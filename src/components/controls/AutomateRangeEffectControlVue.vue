@@ -30,7 +30,8 @@
   <select name="type" id="type" ref="type">
     <option value="random">random</option>
   </select>
-  <button @click="automateValues">Go</button>
+  <button v-if="!isAutomating" @click="automateValues">Go</button>
+  <button v-if="isAutomating" @click="automateValues">Stop</button>
 </template>
 
 <script lang="ts">
@@ -50,18 +51,36 @@ export default defineComponent({
       required: true,
     },
   },
+  data() {
+    return {
+      isAutomating: false,
+      intervalId: null as number | null,
+    };
+  },
   methods: {
     automateValues() {
-      const automationType = (this.$refs.type as HTMLSelectElement).value;
-      const automationValues: AutomationValues = {
-        min: (this.$refs.min as HTMLInputElement).value,
-        max: (this.$refs.max as HTMLInputElement).value,
-        speed: (this.$refs.speed as HTMLSelectElement).value,
-      };
-      switch (automationType) {
-        case "random":
-          control.randomJump(this.updateRangeInput, automationValues);
-          break;
+      if (this.isAutomating && this.intervalId !== null) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        this.isAutomating = false;
+      } else {
+        const automationType = (this.$refs.type as HTMLSelectElement).value;
+        const automationValues: AutomationValues = {
+          min: (this.$refs.min as HTMLInputElement).value,
+          max: (this.$refs.max as HTMLInputElement).value,
+          speed: (this.$refs.speed as HTMLInputElement).value,
+        };
+
+        switch (automationType) {
+          case "random":
+            this.intervalId = control.randomJump(
+              this.updateRangeInput,
+              automationValues
+            );
+            break;
+        }
+
+        this.isAutomating = true;
       }
     },
   },
