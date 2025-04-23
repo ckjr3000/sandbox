@@ -24,9 +24,8 @@ Component for any audio effect that uses a range input to set value.
     </button>
     <AutomateRangeEffectControl
       v-if="showAutomationControls"
-      :audioContext="audioContext"
-      :effectNode="effectNode"
       :inputAttributes="getInputAttributes(param.name)"
+      :updateRangeInput="createRangeInputUpdater(param.name)"
     />
   </div>
 </template>
@@ -60,7 +59,7 @@ export default defineComponent({
   },
   methods: {
     getInputAttributes(paramName: string): RangeInputAttributes {
-      /* 
+      /*
         Because these input refs are created inside a v-for, vue will return this.refs
         as an array. However, because we know that paramName will be unique (because audio
         effects can only be added to a sound source once) we can safely assume access to
@@ -76,6 +75,19 @@ export default defineComponent({
         value: input.value,
       };
       return attributeVals;
+    },
+    getInputRef(paramName: string): HTMLInputElement {
+      const inputArray = this.$refs[`${paramName}-ctrl`] as HTMLInputElement[];
+      return inputArray[0];
+    },
+    createRangeInputUpdater(paramName: string) {
+      return (value: number) => {
+        const input = this.getInputRef(paramName);
+        input.value = value.toString();
+
+        // Dispatch an 'input' event to trigger the handleValueChange
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      };
     },
     handleValueChange(e: Event) {
       const target = e.target as HTMLInputElement;

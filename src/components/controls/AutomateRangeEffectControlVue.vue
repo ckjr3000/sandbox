@@ -34,22 +34,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import { AutomationValues, RangeInputAttributes } from "@/types";
 import * as control from "@/utils/controlUtils";
 
 export default defineComponent({
   props: {
-    audioContext: {
-      type: AudioContext,
-      required: true,
-    },
-    effectNode: {
-      type: AudioNode,
-      required: true,
-    },
     inputAttributes: {
       type: Object as () => RangeInputAttributes,
+      required: true,
+    },
+    // value setter callback function to update the input being automated in the UI
+    updateRangeInput: {
+      type: Function as PropType<(value: number) => void>,
       required: true,
     },
   },
@@ -63,11 +60,7 @@ export default defineComponent({
       };
       switch (automationType) {
         case "random":
-          control.randomJump(
-            this.audioContext,
-            this.effectNode,
-            automationValues
-          );
+          control.randomJump(this.updateRangeInput, automationValues);
           break;
       }
     },

@@ -85,8 +85,7 @@ export function changeFilterQ(
 */
 
 export function randomJump(
-  ctx: AudioContext,
-  effectNode: AudioNode,
+  updateInput: (value: number) => void,
   automationValues: AutomationValues
 ) {
   const min = parseFloat(automationValues.min);
@@ -95,9 +94,6 @@ export function randomJump(
 
   setInterval(() => {
     const randomVal = Math.random() * (max - min) + min;
-    console.log(randomVal);
-    if (effectNode instanceof StereoPannerNode) {
-      changePan(ctx, randomVal, effectNode);
-    }
+    updateInput(randomVal);
   }, speed);
 }
