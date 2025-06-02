@@ -4,6 +4,8 @@
 
 import { AutomationValues } from "@/types";
 
+const rampTime = 0.05;
+
 export function changeGain(
   ctx: AudioContext,
   gainVal: number,
@@ -12,13 +14,13 @@ export function changeGain(
 ) {
   if (!muted) {
     gainNode.gain.setValueAtTime(gainNode.gain.value, ctx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + 0.05);
+    gainNode.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + rampTime);
   }
 }
 
 export function mute(ctx: AudioContext, gainNode: GainNode) {
   gainNode.gain.setValueAtTime(gainNode.gain.value, ctx.currentTime);
-  gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.05);
+  gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + rampTime);
 }
 
 export function changeFreq(
@@ -28,7 +30,7 @@ export function changeFreq(
 ) {
   oscillatorNode.frequency.linearRampToValueAtTime(
     freqVal,
-    ctx.currentTime + 0.05
+    ctx.currentTime + rampTime
   );
 }
 
@@ -38,7 +40,7 @@ export function changePan(
   stereoPanner: StereoPannerNode
 ) {
   stereoPanner.pan.setValueAtTime(stereoPanner.pan.value, ctx.currentTime);
-  stereoPanner.pan.linearRampToValueAtTime(panVal, ctx.currentTime + 0.5);
+  stereoPanner.pan.linearRampToValueAtTime(panVal, ctx.currentTime + rampTime);
 }
 
 export function changeDelay(
@@ -52,7 +54,7 @@ export function changeDelay(
   );
   delayNode.delayTime.linearRampToValueAtTime(
     delayTime,
-    ctx.currentTime + 0.05
+    ctx.currentTime + rampTime
   );
 }
 
@@ -67,7 +69,7 @@ export function changeFilterFrequency(
   );
   filterNode.frequency.linearRampToValueAtTime(
     filterFreq,
-    ctx.currentTime + 0.05
+    ctx.currentTime + rampTime
   );
 }
 
@@ -77,7 +79,7 @@ export function changeFilterQ(
   filterNode: BiquadFilterNode
 ) {
   filterNode.Q.setValueAtTime(filterNode.Q.value, ctx.currentTime);
-  filterNode.Q.linearRampToValueAtTime(filterQ, ctx.currentTime + 0.05);
+  filterNode.Q.linearRampToValueAtTime(filterQ, ctx.currentTime + rampTime);
 }
 
 /*
