@@ -25,6 +25,8 @@ The audio context is initialised here and passed to child components.
         :audioContext="audioContext"
         :activeNoiseSource="noiseSource"
         @noise-removed="handleRemoveNoise"
+        @update-muted="handleUpdateNoiseMute"
+        @update-gain="handleUpdateNoiseGain"
       />
     </div>
 
@@ -38,6 +40,8 @@ The audio context is initialised here and passed to child components.
         :oscType="oscillator.type"
         :activeOsc="oscillator"
         @osc-removed="handleRemoveOsc"
+        @update-muted="handleUpdateOscMute"
+        @update-gain="handleUpdateOscGain"
       />
     </div>
 
@@ -51,6 +55,8 @@ The audio context is initialised here and passed to child components.
         :oscType="oscillator.type"
         :activeOsc="oscillator"
         @osc-removed="handleRemoveOsc"
+        @update-muted="handleUpdateOscMute"
+        @update-gain="handleUpdateOscGain"
       />
     </div>
 
@@ -64,14 +70,24 @@ The audio context is initialised here and passed to child components.
         :oscType="oscillator.type"
         :activeOsc="oscillator"
         @osc-removed="handleRemoveOsc"
+        @update-muted="handleUpdateOscMute"
+        @update-gain="handleUpdateOscGain"
       />
     </div>
+  </section>
+  <section
+    id="global-controls"
+    v-if="oscillators.length > 0 || noiseSources.length > 0"
+  >
+    <button v-if="!allMuted" @click="handleMuteAll">Mute all</button>
+    <button v-if="allMuted" @click="handleUnmuteAll">Unmute all</button>
   </section>
 </template>
 
 <script lang="ts">
 import Noise from "./components/sound-sources/NoiseVue.vue";
 import Oscillator from "./components/sound-sources/OscillatorVue.vue";
+import * as control from "@/utils/controlUtils";
 import * as audio from "@/utils/audioUtils";
 import { OscInstance, NoiseInstance } from "./types";
 import { defineComponent } from "vue";
@@ -86,6 +102,7 @@ export default defineComponent({
       noiseId: 0,
       oscillators: [] as OscInstance[],
       noiseSources: [] as NoiseInstance[],
+      allMuted: true,
     };
   },
   computed: {
@@ -111,6 +128,8 @@ export default defineComponent({
           type: src,
           osc,
           gainNode,
+          isMuted: true,
+          gain: 0.2,
         };
 
         this.oscillators.push(oscInstance);
@@ -124,6 +143,8 @@ export default defineComponent({
           id: this.noiseId,
           noiseSource,
           gainNode,
+          isMuted: true,
+          gain: 0.2,
         };
         this.noiseSources.push(noiseInstance);
       }
@@ -135,6 +156,73 @@ export default defineComponent({
     handleRemoveNoise(noiseId: number) {
       let i = this.noiseSources.map((src) => src.id).indexOf(noiseId);
       this.noiseSources.splice(i, 1);
+    },
+    handleUpdateOscMute(id: number, isMuted: boolean) {
+      const osc = this.oscillators.find((o) => o.id === id);
+      if (osc) osc.isMuted = isMuted;
+      this.checkIfAllMuted();
+    },
+    handleUpdateNoiseMute(id: number, isMuted: boolean) {
+      const noise = this.noiseSources.find((n) => n.id === id);
+      if (noise) noise.isMuted = isMuted;
+      this.checkIfAllMuted();
+    },
+    checkIfAllMuted() {
+      const allMuted =
+        this.oscillators.every((osc) => osc.isMuted) &&
+        this.noiseSources.every((src) => src.isMuted);
+      this.updateMutedState(allMuted);
+    },
+    updateMutedState(state: boolean) {
+      this.allMuted = state;
+    },
+    handleMuteAll() {
+      // Mute all oscillators
+      if (this.oscillators.length > 0) {
+        for (let i = 0; i < this.oscillators.length; i++) {
+          const osc = this.oscillators[i];
+          control.changeGain(this.audioContext, 0, false, osc.gainNode);
+          osc.isMuted = true;
+        }
+      }
+      if (this.noiseSources.length > 0) {
+        for (let i = 0; i < this.noiseSources.length; i++) {
+          const src = this.noiseSources[i];
+          control.changeGain(
+            this.audioContext,
+            0,
+            false,
+            this.noiseSources[i].gainNode
+          );
+          src.isMuted = true;
+        }
+      }
+      this.allMuted = true;
+    },
+    handleUnmuteAll() {
+      if (this.oscillators.length > 0) {
+        for (let i = 0; i < this.oscillators.length; i++) {
+          const osc = this.oscillators[i];
+          control.changeGain(this.audioContext, osc.gain, false, osc.gainNode);
+          osc.isMuted = false;
+        }
+      }
+      if (this.noiseSources.length > 0) {
+        for (let i = 0; i < this.noiseSources.length; i++) {
+          const src = this.noiseSources[i];
+          control.changeGain(this.audioContext, src.gain, false, src.gainNode);
+          src.isMuted = false;
+        }
+      }
+      this.allMuted = false;
+    },
+    handleUpdateOscGain(id: number, gain: number) {
+      const osc = this.oscillators.find((o) => o.id === id);
+      if (osc) osc.gain = gain;
+    },
+    handleUpdateNoiseGain(id: number, gain: number) {
+      const noise = this.noiseSources.find((n) => n.id === id);
+      if (noise) noise.gain = gain;
     },
   },
 });

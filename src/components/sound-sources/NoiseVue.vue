@@ -6,8 +6,20 @@ Component for a white noise sound source.
   <div class="sound-source-component">
     <h2>Noise</h2>
     <button @click="handleRemove">Remove</button>
-    <button v-show="!muted" ref="muteBtn" @click="handleMute">Mute</button>
-    <button v-show="muted" ref="unmuteBtn" @click="handleUnMute">Unmute</button>
+    <button
+      v-show="!activeNoiseSource.isMuted"
+      ref="muteBtn"
+      @click="handleMute"
+    >
+      Mute
+    </button>
+    <button
+      v-show="activeNoiseSource.isMuted"
+      ref="unmuteBtn"
+      @click="handleUnMute"
+    >
+      Unmute
+    </button>
     <div class="gain">
       <label for="gain">Gain</label>
       <input
@@ -65,9 +77,6 @@ export default defineComponent({
   },
   data() {
     return {
-      muted: true,
-      // noiseSource: this.activeNoiseSource.noiseSource,
-      // gainNode: this.activeNoiseSource.gainNode,
       availableEffects: [
         effects.panEffect,
         effects.delayEffect,
@@ -130,25 +139,27 @@ export default defineComponent({
   },
   methods: {
     handleUnMute() {
-      this.muted = false;
+      this.$emit("update-muted", this.activeNoiseSource.id, false);
       control.changeGain(
         this.audioContext,
         parseFloat((this.$refs.gainCtrl as HTMLInputElement).value),
-        this.muted,
+        false,
         this.activeNoiseSource.gainNode
       );
     },
     handleMute() {
-      this.muted = true;
+      this.$emit("update-muted", this.activeNoiseSource.id, true);
       control.mute(this.audioContext, this.activeNoiseSource.gainNode);
     },
     handleGainChange(e: Event) {
       const target = e.target as HTMLInputElement;
-      if (target.value) {
+      const newGain = parseFloat(target.value);
+      if (!isNaN(newGain)) {
+        this.$emit("update-gain", this.activeNoiseSource.id, newGain);
         control.changeGain(
           this.audioContext,
-          parseFloat(target.value),
-          this.muted,
+          newGain,
+          this.activeNoiseSource.isMuted,
           this.activeNoiseSource.gainNode
         );
       }

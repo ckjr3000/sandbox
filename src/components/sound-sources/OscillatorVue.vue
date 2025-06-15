@@ -10,10 +10,18 @@ By default has mute/unmute, gain control, and frequency control.
   <div :class="['sound-source-component', oscTypeClass]">
     <h2>{{ oscType }}</h2>
     <button @click.prevent="handleRemove">Remove</button>
-    <button v-show="!muted" ref="muteBtn" @click.prevent="handleMute">
+    <button
+      v-show="!activeOsc.isMuted"
+      ref="muteBtn"
+      @click.prevent="handleMute"
+    >
       Mute
     </button>
-    <button v-show="muted" ref="unmuteBtn" @click.prevent="handleUnMute">
+    <button
+      v-show="activeOsc.isMuted"
+      ref="unmuteBtn"
+      @click.prevent="handleUnMute"
+    >
       Unmute
     </button>
     <div class="gain">
@@ -25,7 +33,7 @@ By default has mute/unmute, gain control, and frequency control.
         min="0"
         max="1"
         step="any"
-        value="0.2"
+        :value="activeOsc.gain"
         @input="handleGainChange"
       />
     </div>
@@ -105,7 +113,6 @@ export default defineComponent({
   },
   data() {
     return {
-      muted: true,
       panNode: this.audioContext.createStereoPanner(),
       delayNode: this.audioContext.createDelay(),
       availableEffects: [effects.panEffect, effects.delayEffect] as Effect[],
@@ -151,25 +158,27 @@ export default defineComponent({
   },
   methods: {
     handleUnMute() {
-      this.muted = false;
+      this.$emit("update-muted", this.activeOsc.id, false);
       control.changeGain(
         this.audioContext,
         parseFloat((this.$refs.gainCtrl as HTMLInputElement).value),
-        this.muted,
+        false,
         this.activeOsc.gainNode
       );
     },
     handleMute() {
-      this.muted = true;
+      this.$emit("update-muted", this.activeOsc.id, true);
       control.mute(this.audioContext, this.activeOsc.gainNode);
     },
     handleGainChange(e: Event) {
       const target = e.target as HTMLInputElement;
-      if (target.value) {
+      const newGain = parseFloat(target.value);
+      if (!isNaN(newGain)) {
+        this.$emit("update-gain", this.activeOsc.id, newGain);
         control.changeGain(
           this.audioContext,
-          parseFloat(target.value),
-          this.muted,
+          newGain,
+          this.activeOsc.isMuted,
           this.activeOsc.gainNode
         );
       }

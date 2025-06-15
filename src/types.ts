@@ -9,12 +9,16 @@ export interface OscInstance {
   type: string;
   osc: OscillatorNode;
   gainNode: GainNode;
+  isMuted: boolean;
+  gain: number;
 }
 
 export interface NoiseInstance {
   id: number;
   noiseSource: AudioBufferSourceNode;
   gainNode: GainNode;
+  isMuted: boolean;
+  gain: number;
 }
 
 export interface RangeEffectParameter {
