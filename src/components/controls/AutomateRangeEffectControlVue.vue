@@ -4,35 +4,37 @@
 
 <template>
   <h3>Automate</h3>
-  <button @click="handleRemove">Remove</button>
-  <label for="min">min</label>
-  <input
-    id="min"
-    ref="min"
-    type="range"
-    :min="inputAttributes.min"
-    :max="inputAttributes.max"
-    :step="inputAttributes.step"
-    :value="inputAttributes.min"
-  />
-  <label for="max">max</label>
-  <input
-    id="max"
-    ref="max"
-    type="range"
-    :min="inputAttributes.min"
-    :max="inputAttributes.max"
-    :step="inputAttributes.step"
-    :value="inputAttributes.max"
-  />
-  <label for="speed">speed (ms)</label>
-  <input id="speed" ref="speed" type="number" />
-  <label for="type">type</label>
-  <select name="type" id="type" ref="type">
-    <option value="random">random</option>
-  </select>
-  <button v-if="!isAutomating" @click="automateValues">Go</button>
-  <button v-if="isAutomating" @click="automateValues">Stop</button>
+  <section id="automation-controls">
+    <label for="min">min</label>
+    <input
+      id="min"
+      ref="min"
+      type="range"
+      :min="inputAttributes.min"
+      :max="inputAttributes.max"
+      :step="inputAttributes.step"
+      :value="inputAttributes.min"
+    />
+    <label for="max">max</label>
+    <input
+      id="max"
+      ref="max"
+      type="range"
+      :min="inputAttributes.min"
+      :max="inputAttributes.max"
+      :step="inputAttributes.step"
+      :value="inputAttributes.max"
+    />
+    <label for="speed">speed (ms)</label>
+    <input id="speed" ref="speed" type="number" />
+    <label for="type">type</label>
+    <select name="type" id="type" ref="type">
+      <option value="random">random</option>
+    </select>
+    <button v-if="!isAutomating" @click="automateValues">Go</button>
+    <button v-if="isAutomating" @click="automateValues">Stop</button>
+    <button @click="handleRemove">Remove</button>
+  </section>
 </template>
 
 <script lang="ts">
@@ -99,4 +101,9 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+#automation-controls {
+  display: flex;
+  flex-direction: column;
+}
+</style>

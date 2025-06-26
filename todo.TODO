@@ -8,11 +8,13 @@ Effects
 - Build pan @done
 - Build q factor @done
 - Build delay @done
-- Build wave shape selection
 - Build filters @done
 Controls
 - Build value automation component @done
-Bundles
-- Build button grid component
+- Add linear automation
+Styling
+- Margins and padding
+- Global button placement
+- Put automation controls in column
 
 - Write README

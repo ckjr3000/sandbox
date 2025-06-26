@@ -15,6 +15,13 @@ The audio context is initialised here and passed to child components.
       {{ source }}
     </button>
   </section>
+  <section
+    id="global-controls"
+    v-if="oscillators.length > 0 || noiseSources.length > 0"
+  >
+    <button v-if="!allMuted" @click="handleMuteAll">Mute all</button>
+    <button v-if="allMuted" @click="handleUnmuteAll">Unmute all</button>
+  </section>
   <section id="sound-sources">
     <!-- noise sources -->
     <div class="sound-sources-group">
@@ -74,13 +81,6 @@ The audio context is initialised here and passed to child components.
         @update-gain="handleUpdateOscGain"
       />
     </div>
-  </section>
-  <section
-    id="global-controls"
-    v-if="oscillators.length > 0 || noiseSources.length > 0"
-  >
-    <button v-if="!allMuted" @click="handleMuteAll">Mute all</button>
-    <button v-if="allMuted" @click="handleUnmuteAll">Unmute all</button>
   </section>
 </template>
 

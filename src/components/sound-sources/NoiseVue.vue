@@ -5,21 +5,24 @@ Component for a white noise sound source.
 <template>
   <div class="sound-source-component">
     <h2>Noise</h2>
-    <button @click="handleRemove">Remove</button>
-    <button
-      v-show="!activeNoiseSource.isMuted"
-      ref="muteBtn"
-      @click="handleMute"
-    >
-      Mute
-    </button>
-    <button
-      v-show="activeNoiseSource.isMuted"
-      ref="unmuteBtn"
-      @click="handleUnMute"
-    >
-      Unmute
-    </button>
+    <section id="sound-source-controls">
+      <button @click.prevent="handleRemove">Remove</button>
+      <button
+        v-show="!activeNoiseSource.isMuted"
+        ref="muteBtn"
+        @click.prevent="handleMute"
+      >
+        Mute
+      </button>
+      <button
+        v-show="activeNoiseSource.isMuted"
+        ref="unmuteBtn"
+        @click.prevent="handleUnMute"
+      >
+        Unmute
+      </button>
+      <button>Duplicate</button>
+    </section>
     <div class="gain">
       <label for="gain">Gain</label>
       <input

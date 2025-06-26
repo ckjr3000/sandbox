@@ -9,21 +9,24 @@ By default has mute/unmute, gain control, and frequency control.
 <template>
   <div :class="['sound-source-component', oscTypeClass]">
     <h2>{{ oscType }}</h2>
-    <button @click.prevent="handleRemove">Remove</button>
-    <button
-      v-show="!activeOsc.isMuted"
-      ref="muteBtn"
-      @click.prevent="handleMute"
-    >
-      Mute
-    </button>
-    <button
-      v-show="activeOsc.isMuted"
-      ref="unmuteBtn"
-      @click.prevent="handleUnMute"
-    >
-      Unmute
-    </button>
+    <section id="sound-source-controls">
+      <button @click.prevent="handleRemove">Remove</button>
+      <button
+        v-show="!activeOsc.isMuted"
+        ref="muteBtn"
+        @click.prevent="handleMute"
+      >
+        Mute
+      </button>
+      <button
+        v-show="activeOsc.isMuted"
+        ref="unmuteBtn"
+        @click.prevent="handleUnMute"
+      >
+        Unmute
+      </button>
+      <button>Duplicate</button>
+    </section>
     <div class="gain">
       <label for="gain">Gain</label>
       <input
